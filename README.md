@@ -1,5 +1,7 @@
 # firefighter-robot-game-multiplayer
-The multiplayer part of the Firefighter Robot game, from the HoRIzON project. Forked from [YoannH/PIR](https://github.com/YoannH/PIR). This is for a second-year research project à ISAE-Supaero. 
+The multiplayer part of the Firefighter Robot game, from the HoRIzON project. The original game can be played [here](http://robot-isae.isae.fr).
+
+Forked from [YoannH/PIR](https://github.com/YoannH/PIR). This is for a second-year research project at ISAE-Supaero. 
 
 ## Installation for Mac
 
