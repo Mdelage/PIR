@@ -13,25 +13,25 @@ brew install nodejs
 sudo npm install -g npm@latest
 sudo npm install -g angular@cli
 ```
-This will first install Node.js via the Mac package manager _Homebrew_ and will install Angular with _Node package manager_.
+This will first install Node.js via the Mac package manager `homebrew` and will install Angular with `npm`.
 
 #### Setting up the server
 
-Get the source files by cloning the repository with _Git_, in the directory of your choice.
+Get the source files by cloning the repository with `git`, in the directory of your choice.
 ```
 git clone https://github.com/Mdelage/firefighter-robot-game-multiplayer.git
 ```
 Go into the directory, in `/firefighter-robot-game-multiplayer/server` with `cd` and type:
 ```
-node ./app.js &
+node ./app.js
 ```
 The terminal should say that the server is now listening for requests.
 
-Next, go into `/firefighter-robot-game-multiplayer/client` and type:
+Next, open another terminal, go into `/firefighter-robot-game-multiplayer/client` and type:
 ```
 npm install .
-ng serve &
+ng serve
 ```
 This will install the necessary packages.
 
-You can now access the server at http://localhost:4200/ !
+You can now access the server at http://localhost:4200/! For testing with two players, simply open two tabs at once.
