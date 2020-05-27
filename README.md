@@ -23,16 +23,16 @@ git clone https://github.com/Mdelage/firefighter-robot-game-multiplayer.git
 ```
 Go into the directory, in `/firefighter-robot-game-multiplayer/server` with `cd` and type:
 ```
-npm install .
+npm install
 node ./app.js
 ```
-This will install the necessary packages for the server. The terminal should say that the server is now listening for requests.
+This will install the necessary packages for the server and run the server. The terminal should say that the server is now listening for requests.
 
 Next, open another terminal, go into `/firefighter-robot-game-multiplayer/client` and type:
 ```
-npm install .
+npm install
 ng serve
 ```
-This will install the necessary packages for the client.
+This will install the necessary packages for the client and run the development server using Angular.
 
 You can now access the server at http://localhost:4200/! For testing with two players, simply open two tabs at once.
