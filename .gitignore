@@ -44,3 +44,8 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# Scores and game records
+records/
+server/records/
+server/scores.json
