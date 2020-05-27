@@ -1,6 +1,0 @@
-#robot1 : speeder, robot2 : tanker
-# remaining_time, trees_state, global_score, ground_tank_water_level, leaks, personnal_score1, autonomous1, alarms1, robot1_x, robot1_y, robot1_theta, robot1_battery, robot1_temperature, robot1_waterlevel, robot1_shortkeys, robot1_clicks, personnal_score2, autonomous2, alarms2, robot2_x, robot2_y, robot2_theta, robot2_battery, robot2_temperature, robot2_waterlevel, robot2_shortkeys, robot2_clicks  
-600, '0,0,0,0,0,0,0,0,0,0', 0, 50, 'true,true,true,true,true,true,true,true,true', 0, 0, '', 75, 60, 3.141592653589793, 50, 0, 30, '', '', 0, 0, '', 75, 40, 3.141592653589793, 100, 0, 50, '', ''
-599, '0,0,0,0,0,0,0,0,0,0', 0, 50, 'true,true,true,true,true,true,true,true,true', 0, 0, '', 75, 60, 3.141592653589793, 49, 0, 30, '', '', 0, 0, '', 75, 40, 3.141592653589793, 99, 0, 50, '', ''
-598, '0,0,0,0,0,0,0,0,0,0', 0, 50, 'true,true,true,true,true,true,true,true,true', 0, 0, '', 75, 60, 3.141592653589793, 48, 0, 30, '', '', 0, 0, '', 75, 40, 3.141592653589793, 98, 0, 50, '', ''
-597, '0,0,0,0,0,0,0,0,0,0', 0, 50, 'true,true,true,true,true,true,true,true,true', 0, 0, '', 75, 60, 3.141592653589793, 47, 0, 30, '', '', 0, 0, '', 75, 40, 3.141592653589793, 97, 0, 50, '', ''
