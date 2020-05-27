@@ -5,14 +5,28 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "homepage": "https://github.com/Mdelage/firefighter-robot-game-multiplayer",
   "keywords": [],
-  "author": "",
+  "author": "Martin Delage <martin.delage@student.isae-supaero.fr>",
+  "contributors": [
+    "Nicolas Drougard <nicolas.drougard@isae-supaero.fr>",
+    "Come Lavisse",
+    "Yoann Heitz"
+  ],
   "license": "ISC",
-  "description": "",
+  "description": "The multiplayer part of the Firefighter Robot game.",
+  "bugs": {
+    "url": "https://github.com/Mdelage/firefighter-robot-game-multiplayer",
+    "email": "martin.delage@student.isae-supaero.fr"
+  },
   "dependencies": {
     "express": "^4.17.1",
     "fs": "0.0.1-security",
-    "mkdirp": "^0.5.1",
-    "socket.io": "^2.2.0"
+    "mkdirp": "^0.5.5",
+    "socket.io": "^2.3.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Mdelage/firefighter-robot-game-multiplayer"
   }
 }
