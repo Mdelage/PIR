@@ -80,8 +80,8 @@ var autonomousCapThreshold = 0.03;
 var autonomousScalarProdThreshold = 0.5;
 var probaAlarms = 0.7;
 
-var temperatureMax = 1000000; //1000
-var batteryMax = 1000000; //1000
+var temperatureMax = 1000000; // Default value: 1000
+var batteryMax = 1000000; // Default value: 1000
 
 //Intervals
 var socketStates;
@@ -121,7 +121,10 @@ function initWater() {
   // Corresponds to the speed of the faucet
   water.faucetControl  = 0;
   water.faucetControlShow = '0';
+  
+  // Corresponds to the direction the faucet is going toward
   water.direction = 0;
+  
   water.animTime  = 0;
 
   water.waterWidth = 0;
@@ -281,39 +284,45 @@ function dataProcessing() {
 }
 
 var faucetCtrlFctMinus = () => {
-    if(water.faucetControl > -3) {
-      water.faucetControl--; 
-      water.faucetControlShow = water.faucetControl.toString();
+  
+  var x = water.faucetControl;
+  
+  if(x > -3) {
+    
+    water.faucetControl -= 1; 
+    water.faucetControlShow = water.faucetControl.toString();
+    
+    water.direction = Math.sign(x);
+    
+    if (x > 0) {
+      water.faucetControlShow = '+' + water.faucetControlShow;
     }
-    if(water.faucetControl > 0){
-        water.faucetControlShow = '+' + water.faucetControl.toString();
-        water.direction = 1;
-      }
-    else if(water.faucetControl < 0){
-      water.direction = -1;
-    }
-    else{
-      water.direction = 0;
-    }
-    water.animTime = 10 - Math.abs(water.faucetControl)*3;
+    
+  }
+
+  water.animTime = 10 - Math.abs(x)*3;
+
 };
 
 var faucetCtrlFctPlus = () => {
-    if(water.faucetControl < 3) {
-      water.faucetControl += 1; 
-      water.faucetControlShow = water.faucetControl.toString();
+  
+  var x = water.faucetControl;
+  
+  if(x < 3) {
+    
+    water.faucetControl += 1; 
+    water.faucetControlShow = water.faucetControl.toString();
+    
+    water.direction = Math.sign(x);
+    
+    if (x > 0) {
+      water.faucetControlShow = '+' + water.faucetControlShow;
     }
-    if(water.faucetControl > 0){
-        water.faucetControlShow = '+' + water.faucetControl.toString();
-        water.direction = 1;
-      }
-    else if(water.faucetControl < 0){
-      water.direction = -1;
-    }
-    else{
-      water.direction = 0;
-    }
-    water.animTime = 7 - Math.abs(water.faucetControl)*2;
+    
+  }
+
+  water.animTime = 7 - Math.abs(x)*2;
+
 };
 
 var waterPushButton = () => {
@@ -635,7 +644,7 @@ function saveScore(){
       var i;
       var l = scores.length;
       
-      for(i = l - 1; i > rank; i--) {
+      for(i = l - 1; i > rank; i -= 1) {
         scores[i].pseudo1 = scores[i-1].pseudo1;
 				scores[i].score1 = scores[i-1].score1;
 				scores[i].pseudo2 = scores[i-1].pseudo2;
@@ -1270,7 +1279,7 @@ function startGame(){
   batteryInterval = setInterval(() => {
       if(player1Datas.battery > 0){
           player2Datas.otherBatteryAlarmSent = false;
-          player1Datas.battery--;
+          player1Datas.battery -= 1;
           if(player1Datas.noBattery){
               player1Datas.noBattery = false;
           }
@@ -1296,7 +1305,7 @@ function startGame(){
           if(player2Datas.noBattery){
               player2Datas.noBattery = false;
           }
-          player2Datas.battery--;
+          player2Datas.battery -= 1;
           pAlarm = Math.random();
           if(!player2Datas.ownBatteryAlarmSent && player2Datas.battery <= 20 && pAlarm < probaAlarms){
               var comma = (player2Datas.stringWriteAlarms == "'") ? '' : ',';
@@ -1340,7 +1349,7 @@ function startGame(){
 
   timer = setInterval(() => {
       if(!isFinished && remainingTime > 0){
-          remainingTime--;
+          remainingTime -= 1;
           pAlarm = Math.random();
           if(remainingTime == 30 && pAlarm < probaAlarms){
               var comma = (player1Datas.stringWriteAlarms == "'") ? '' : ',';
@@ -1469,7 +1478,7 @@ io.on('connection', (socket) => {
 
                     if (waitingTime > 0) {
 
-                      waitingTime--;
+                      waitingTime -= 1;
                       socketNb1.emit("timeBeforeStart", {timeBeforeStart : waitingTime});
                       socketNb2.emit("timeBeforeStart", {timeBeforeStart : waitingTime});
 
@@ -1528,7 +1537,7 @@ io.on('connection', (socket) => {
 				//le premier joueur s'est déconnecté entre temps
 				else {
                   
-					nbPlayers--;
+					nbPlayers -= 1;
 					player1 = token;
 					socketNb1 = socket;
 					
