@@ -49,12 +49,13 @@ var player2;
 //Number representing the position of the current player
 var playerPos;
 
+// Represents the water reservoir and faucet
 var water;
 
 var treesLocations;
 var zonesLocations;
 
-//Boolean array telling if a given tree is on fire
+// Boolean array telling if a given tree is on fire
 var firesStatesOfTrees;
 
 var timeStep = 0.02;
@@ -78,6 +79,9 @@ var autonomousCollidingThreshold = 5;
 var autonomousCapThreshold = 0.03;
 var autonomousScalarProdThreshold = 0.5;
 var probaAlarms = 0.7;
+
+var temperatureMax = 1000000; //1000
+var batteryMax = 1000000; //1000
 
 //Intervals
 var socketStates;
@@ -114,6 +118,7 @@ function initWater() {
   water.leftValues = [];
   water.leakCounter  = 0;
 
+  // Corresponds to the speed of the faucet
   water.faucetControl  = 0;
   water.faucetControlShow = '0';
   water.direction = 0;
@@ -1018,240 +1023,6 @@ const inputArray = {
 
 }
 
-server.listen(3000, () => {
-	console.log("Server listening on port 3000");
-});
-
-// var cleanSocketArrayInterval = setInterval(() => {
-// 	socketsArray.forEach((element) => {
-// 		if(!element.socket.connected){
-// 			socketsArray.splice(element.token,1);
-// 		}
-// 	});
-// }, 600000);
-
-io.on('connection', (socket) => {
-	globalToken += 1;
-	socket.emit("tokenResponse", {token : globalToken});
-	socketsArray[globalToken] = {socket : socket , token : globalToken} ;
-	socket.on("getRemainingTime", () => {
-		socket.emit("remainingTimeResponse", {remainingTime : remainingTime });
-	});
-
-	socket.on("getScores", (data) => {
-		var scoreChain = fs.readFileSync('scores.json', 'UTF-8');
-		var scores = JSON.parse(scoreChain);
-		socket.emit("scores", { scores : scores});
-	});
-
-	//traitement lors d'une requete pour jouer (redirection vers la page de chargement 
-	// et lancement ou non d'un timer)
-	socket.on("getPlay", (data) => {
-      
-        //A token for identifying players
-		var token = data.token;
-      
-		if (gameAvailable) {
-          
-          socket.emit("accessAuthorized", {});
-		  nbPlayers += 1;
-          
-          if (nbPlayers === 1) {
-            
-            player1 = data.token;
-            socketNb1 = socket;
-            
-		  } else {
-				//les 2 joueurs sont connectés dans l'écran de chargement
-				if (socketNb1.connected) {
-                  
-                  //on renseigne les autres connectés que le serveur est occupé
-                  remainingTime = gameTime + waitingTime;
-                  
-                  socketsArray.forEach((element) => {
-                    element.socket.emit("remainingTimeResponse", {remainingTime : remainingTime});
-                  });
-
-                  player2 = data.token;
-                  socketNb2 = socket;
-                  gameAvailable = false;
-                  gameWillSoonStart = true;
-                  player1Ready = false;
-                  player2Ready = false;
-                  waitingTime = 10;
-
-                  nbReadyPlayers = 0;
-                  pseudo1 = '';
-                  pseudo2 = '';
-
-                  //on lance un timer de 10 secondes : les joueurs doivent cliquer sur un bouton
-                  //avant la fin pour lancer la partie, ceux qui ne le font pas sont redirigés 
-                  //en dehors de l'écran de chargement
-                  //si les 2 le font la partie se lance
-                  const waitingRepeater = setInterval( () => {
-
-                    if (waitingTime > 0) {
-
-                      waitingTime--;
-                      socketNb1.emit("timeBeforeStart", {timeBeforeStart : waitingTime});
-                      socketNb2.emit("timeBeforeStart", {timeBeforeStart : waitingTime});
-
-                    } else {
-
-                      if (nbReadyPlayers === 2) {
-
-                        socketNb1.emit("launchingGame", {});
-                        socketNb2.emit("launchingGame", {});
-                        nbPlayersLogged = 0;
-                        initGame();
-
-                      } else {
-
-                        if (player1Ready) {
-
-                          socketNb1.emit("launchFailed", {waitingAgain : true});
-                          socketNb2.emit("launchFailed", {waitingAgain : false});
-                          nbPlayers = 1;
-
-                        } else {
-
-                          if (player2Ready) {
-
-                            socketNb1.emit("launchFailed", {waitingAgain : false});
-                            socketNb2.emit("launchFailed", {waitingAgain : true});
-                            nbPlayers = 1;
-                            player1 = player2;
-                            socketNb1 = socketNb2;
-
-                          } else {
-
-                            socketNb1.emit("launchFailed", {waitingAgain : false});
-                            socketNb2.emit("launchFailed", {waitingAgain : false});
-                            nbPlayers = 0;
-
-                          }
-                        }
-
-                        gameAvailable = true;
-                        gameWillSoonStart = false;
-                        remainingTime = 0;
-
-                        socketsArray.forEach((element) => {
-                          element.socket.emit("remainingTimeResponse", {remainingTime : remainingTime});	
-                        });
-
-                      }
-
-                      clearInterval(waitingRepeater);
-
-                    }
-                  }, 1000);
-                }
-              
-				//le premier joueur s'est déconnecté entre temps
-				else {
-                  
-					nbPlayers--;
-					player1 = token;
-					socketNb1 = socket;
-					
-				}
-			}
-		}else{
-			socket.emit("accessDenied", {remainingTime : remainingTime});
-		}		
-	});
-
-	socket.on("readyToPlay", (data) =>{
-		nbPlayersLogged +=1;
-		if(nbPlayersLogged === 2){
-			startGame();
-		}
-	});
-
-	socket.on("ready", (data) => {
-		var token = data.token;
-		var playerNumber = 0
-		if(token === player1){
-			playerNumber = 1;
-			if(data.pseudo){
-				pseudo1 = data.pseudo;
-			}else{
-				pseudo1 = "anonymous";
-			}
-		}else if(token === player2){
-			playerNumber = 2;
-			if(data.pseudo){
-				pseudo2 = data.pseudo;
-			}else{
-				pseudo2 = "anonymous";
-			}
-		}
-		if(gameWillSoonStart && (playerNumber != 0)){
-			if(playerNumber === 1 && !player1Ready){
-				player1Ready = true;
-				nbReadyPlayers +=1;
-			}
-			else if(!player2Ready){
-				player2Ready = true;
-				nbReadyPlayers +=1;
-			}
-		}else{
-			socket.emit("launchFailed", {waitingAgain : false});
-		}
-	});
-
-	socket.on("killAll", (data) => {
-		finishGame(2);
-	});
-
-	//key controls
-	socket.on('clickLeak', (data) => {
-		var playerDatas = player1Datas;
-		if(data.token === player2){
-			playerDatas = player2Datas;
-		}
-		var comma = (playerDatas.stringWriteClicks == "'") ? '' : ',';
-		playerDatas.stringWriteClicks += comma + 'clickLeak' + data.key.toString();
-		clickLeak(data.key);
-	});
-
-	socket.on('removeAlarm', (data) => {
-		var playerDatas = player1Datas;
-		if(data.token === player2){
-			playerDatas = player2Datas;
-		}
-		var comma = (playerDatas.stringWriteClicks == "'") ? '' : ',';
-		playerDatas.stringWriteClicks += comma + 'removeAlarm';
-		clickLeak(data.key);
-	});
-
-	socket.on('key', (data) => {
-        //A token for identifying players
-        var token = data.token;
-      
-		var playerData;
-		if(token === player1){
-			playerData = player1Datas;
-		}else{
-			playerData = player2Datas;
-		}
-		var key = data.key;
-		var comma = (playerData.stringWriteUsedKeys == "'") ? '' : ',';
-		playerData.stringWriteUsedKeys += comma + data.key;
-        
-        /* We use an associative array instead of if else statements for 
-        registering the inputs.
-        With this method, we only do one comparison for each input, instead of multiple.*/
-        
-        /* That if is to prevent an undefined key to call a function
-        which would raise an exception. */
-        if (inputArray["key" + key]) { inputArray["key" + key](playerData, token, socket); }
-      
-	});
-  
-});
-
 function initGame(){
   var p;
   var player1Role;
@@ -1494,7 +1265,7 @@ function startGame(){
           finishGame(4);
       }
 
-  }, 1000);
+  }, temperatureMax);
 
   batteryInterval = setInterval(() => {
       if(player1Datas.battery > 0){
@@ -1546,7 +1317,7 @@ function startGame(){
       if(player1Datas.noBattery && player2Datas.noBattery){
           finishGame(3);
       }
-  },1000);
+  }, batteryMax);
 
   var alea1 = -1;
   var alea2 = -1;
@@ -1623,3 +1394,237 @@ function startGame(){
 
 
 }
+
+server.listen(3000, () => {
+	console.log("Server listening on port 3000");
+});
+
+// var cleanSocketArrayInterval = setInterval(() => {
+// 	socketsArray.forEach((element) => {
+// 		if(!element.socket.connected){
+// 			socketsArray.splice(element.token,1);
+// 		}
+// 	});
+// }, 600000);
+
+io.on('connection', (socket) => {
+	globalToken += 1;
+	socket.emit("tokenResponse", {token : globalToken});
+	socketsArray[globalToken] = {socket : socket , token : globalToken} ;
+	socket.on("getRemainingTime", () => {
+		socket.emit("remainingTimeResponse", {remainingTime : remainingTime });
+	});
+
+	socket.on("getScores", (data) => {
+		var scoreChain = fs.readFileSync('scores.json', 'UTF-8');
+		var scores = JSON.parse(scoreChain);
+		socket.emit("scores", { scores : scores});
+	});
+
+	//traitement lors d'une requete pour jouer (redirection vers la page de chargement 
+	// et lancement ou non d'un timer)
+	socket.on("getPlay", (data) => {
+      
+        //A token for identifying players
+		var token = data.token;
+      
+		if (gameAvailable) {
+          
+          socket.emit("accessAuthorized", {});
+		  nbPlayers += 1;
+          
+          if (nbPlayers === 1) {
+            
+            player1 = data.token;
+            socketNb1 = socket;
+            
+		  } else {
+				//les 2 joueurs sont connectés dans l'écran de chargement
+				if (socketNb1.connected) {
+                  
+                  //on renseigne les autres connectés que le serveur est occupé
+                  remainingTime = gameTime + waitingTime;
+                  
+                  socketsArray.forEach((element) => {
+                    element.socket.emit("remainingTimeResponse", {remainingTime : remainingTime});
+                  });
+
+                  player2 = data.token;
+                  socketNb2 = socket;
+                  gameAvailable = false;
+                  gameWillSoonStart = true;
+                  player1Ready = false;
+                  player2Ready = false;
+                  waitingTime = 10;
+
+                  nbReadyPlayers = 0;
+                  pseudo1 = '';
+                  pseudo2 = '';
+
+                  //on lance un timer de 10 secondes : les joueurs doivent cliquer sur un bouton
+                  //avant la fin pour lancer la partie, ceux qui ne le font pas sont redirigés 
+                  //en dehors de l'écran de chargement
+                  //si les 2 le font la partie se lance
+                  const waitingRepeater = setInterval( () => {
+
+                    if (waitingTime > 0) {
+
+                      waitingTime--;
+                      socketNb1.emit("timeBeforeStart", {timeBeforeStart : waitingTime});
+                      socketNb2.emit("timeBeforeStart", {timeBeforeStart : waitingTime});
+
+                    } else {
+
+                      if (nbReadyPlayers === 2) {
+
+                        socketNb1.emit("launchingGame", {});
+                        socketNb2.emit("launchingGame", {});
+                        nbPlayersLogged = 0;
+                        initGame();
+
+                      } else {
+
+                        if (player1Ready) {
+
+                          socketNb1.emit("launchFailed", {waitingAgain : true});
+                          socketNb2.emit("launchFailed", {waitingAgain : false});
+                          nbPlayers = 1;
+
+                        } else {
+
+                          if (player2Ready) {
+
+                            socketNb1.emit("launchFailed", {waitingAgain : false});
+                            socketNb2.emit("launchFailed", {waitingAgain : true});
+                            nbPlayers = 1;
+                            player1 = player2;
+                            socketNb1 = socketNb2;
+
+                          } else {
+
+                            socketNb1.emit("launchFailed", {waitingAgain : false});
+                            socketNb2.emit("launchFailed", {waitingAgain : false});
+                            nbPlayers = 0;
+
+                          }
+                        }
+
+                        gameAvailable = true;
+                        gameWillSoonStart = false;
+                        remainingTime = 0;
+
+                        socketsArray.forEach((element) => {
+                          element.socket.emit("remainingTimeResponse", {remainingTime : remainingTime});	
+                        });
+
+                      }
+
+                      clearInterval(waitingRepeater);
+
+                    }
+                  }, 1000);
+                }
+              
+				//le premier joueur s'est déconnecté entre temps
+				else {
+                  
+					nbPlayers--;
+					player1 = token;
+					socketNb1 = socket;
+					
+				}
+			}
+		}else{
+			socket.emit("accessDenied", {remainingTime : remainingTime});
+		}		
+	});
+
+	socket.on("readyToPlay", (data) =>{
+		nbPlayersLogged +=1;
+		if(nbPlayersLogged === 2){
+			startGame();
+		}
+	});
+
+	socket.on("ready", (data) => {
+		var token = data.token;
+		var playerNumber = 0
+		if(token === player1){
+			playerNumber = 1;
+			if(data.pseudo){
+				pseudo1 = data.pseudo;
+			}else{
+				pseudo1 = "anonymous";
+			}
+		}else if(token === player2){
+			playerNumber = 2;
+			if(data.pseudo){
+				pseudo2 = data.pseudo;
+			}else{
+				pseudo2 = "anonymous";
+			}
+		}
+		if(gameWillSoonStart && (playerNumber != 0)){
+			if(playerNumber === 1 && !player1Ready){
+				player1Ready = true;
+				nbReadyPlayers +=1;
+			}
+			else if(!player2Ready){
+				player2Ready = true;
+				nbReadyPlayers +=1;
+			}
+		}else{
+			socket.emit("launchFailed", {waitingAgain : false});
+		}
+	});
+
+	socket.on("killAll", (data) => {
+		finishGame(2);
+	});
+
+	//key controls
+	socket.on('clickLeak', (data) => {
+		var playerDatas = player1Datas;
+		if(data.token === player2){
+			playerDatas = player2Datas;
+		}
+		var comma = (playerDatas.stringWriteClicks == "'") ? '' : ',';
+		playerDatas.stringWriteClicks += comma + 'clickLeak' + data.key.toString();
+		clickLeak(data.key);
+	});
+
+	socket.on('removeAlarm', (data) => {
+		var playerDatas = player1Datas;
+		if(data.token === player2){
+			playerDatas = player2Datas;
+		}
+		var comma = (playerDatas.stringWriteClicks == "'") ? '' : ',';
+		playerDatas.stringWriteClicks += comma + 'removeAlarm';
+		clickLeak(data.key);
+	});
+
+	socket.on('key', (data) => {
+        //A token for identifying players
+        var token = data.token;
+      
+		var playerData;
+		if(token === player1){
+			playerData = player1Datas;
+		}else{
+			playerData = player2Datas;
+		}
+		var key = data.key;
+		var comma = (playerData.stringWriteUsedKeys == "'") ? '' : ',';
+		playerData.stringWriteUsedKeys += comma + data.key;
+        
+        /* We use an associative array instead of if else statements for 
+        registering the inputs.
+        With this method, we only do one comparison for each input, instead of multiple.*/
+        
+        /* That if is to prevent an undefined key to call a function
+        which would raise an exception. */
+        if (inputArray["key" + key]) { inputArray["key" + key](playerData, token, socket); }
+      
+	});
+  
+});
