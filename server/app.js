@@ -1051,90 +1051,110 @@ io.on('connection', (socket) => {
         //A token for identifying players
 		var token = data.token;
       
-		if(gameAvailable){
-			socket.emit("accessAuthorized", {});
-			
-			nbPlayers += 1;
-			if(nbPlayers === 1){
-				player1 = data.token;
-				socketNb1 = socket;
-			}else{
+		if (gameAvailable) {
+          
+          socket.emit("accessAuthorized", {});
+		  nbPlayers += 1;
+          
+          if (nbPlayers === 1) {
+            
+            player1 = data.token;
+            socketNb1 = socket;
+            
+		  } else {
 				//les 2 joueurs sont connectés dans l'écran de chargement
-				if(socketNb1.connected){
-					//on renseigne les autres connectés que le serveur est occupé
-					remainingTime = gameTime + waitingTime;
-					socketsArray.forEach((element) => {
-						element.socket.emit("remainingTimeResponse", {remainingTime : remainingTime});
+				if (socketNb1.connected) {
+                  
+                  //on renseigne les autres connectés que le serveur est occupé
+                  remainingTime = gameTime + waitingTime;
+                  
+                  socketsArray.forEach((element) => {
+                    element.socket.emit("remainingTimeResponse", {remainingTime : remainingTime});
+                  });
 
-					});
+                  player2 = data.token;
+                  socketNb2 = socket;
+                  gameAvailable = false;
+                  gameWillSoonStart = true;
+                  player1Ready = false;
+                  player2Ready = false;
+                  waitingTime = 10;
 
-					player2 = data.token;
-					socketNb2 = socket;
-					gameAvailable = false;
-					gameWillSoonStart = true;
-					player1Ready = false;
-					player2Ready = false;
-					waitingTime = 5;
-					
-					nbReadyPlayers = 0;
-					pseudo1 = '';
-					pseudo2 = '';
-					//on lance un timer de 15 secondes : les joueurs doivent cliquer sur un bouton
-					//avant la fin pour lancer la partie, ceux qui ne le font pas sont redirigés 
-					//en dehors de l'écran de chargement
-					//si les 2 le font la partie se lance
-					const waitingRepeater = setInterval( () => {
-						if(waitingTime > 0){
-							waitingTime--;
-							socketNb1.emit("timeBeforeStart", {timeBeforeStart : waitingTime});
-							socketNb2.emit("timeBeforeStart", {timeBeforeStart : waitingTime});
-						}
-						else{
-							if(nbReadyPlayers === 2){
-								socketNb1.emit("launchingGame", {});
-								socketNb2.emit("launchingGame", {});
-								nbPlayersLogged = 0;
-								initGame();
-							}
-							else{
-								if(player1Ready){
-									socketNb1.emit("launchFailed", {waitingAgain : true});
-									socketNb2.emit("launchFailed", {waitingAgain : false});
-									nbPlayers = 1;
-								}
-								else{
-									if(player2Ready){
-										socketNb1.emit("launchFailed", {waitingAgain : false});
-										socketNb2.emit("launchFailed", {waitingAgain : true});
-										nbPlayers = 1;
-										player1 = player2;
-										socketNb1 = socketNb2;
-									}
-									else{
-										socketNb1.emit("launchFailed", {waitingAgain : false});
-										socketNb2.emit("launchFailed", {waitingAgain : false});
-										nbPlayers = 0;
-									}
-								}
-								gameAvailable = true;
-								gameWillSoonStart = false;
-								remainingTime = 0;
+                  nbReadyPlayers = 0;
+                  pseudo1 = '';
+                  pseudo2 = '';
 
-								socketsArray.forEach((element) => {
-									element.socket.emit("remainingTimeResponse", {remainingTime : remainingTime});	
-								});
+                  //on lance un timer de 10 secondes : les joueurs doivent cliquer sur un bouton
+                  //avant la fin pour lancer la partie, ceux qui ne le font pas sont redirigés 
+                  //en dehors de l'écran de chargement
+                  //si les 2 le font la partie se lance
+                  const waitingRepeater = setInterval( () => {
 
-							}
-							clearInterval(waitingRepeater);
-						}
-					}, 1000);
-				}
+                    if (waitingTime > 0) {
+
+                      waitingTime--;
+                      socketNb1.emit("timeBeforeStart", {timeBeforeStart : waitingTime});
+                      socketNb2.emit("timeBeforeStart", {timeBeforeStart : waitingTime});
+
+                    } else {
+
+                      if (nbReadyPlayers === 2) {
+
+                        socketNb1.emit("launchingGame", {});
+                        socketNb2.emit("launchingGame", {});
+                        nbPlayersLogged = 0;
+                        initGame();
+
+                      } else {
+
+                        if (player1Ready) {
+
+                          socketNb1.emit("launchFailed", {waitingAgain : true});
+                          socketNb2.emit("launchFailed", {waitingAgain : false});
+                          nbPlayers = 1;
+
+                        } else {
+
+                          if (player2Ready) {
+
+                            socketNb1.emit("launchFailed", {waitingAgain : false});
+                            socketNb2.emit("launchFailed", {waitingAgain : true});
+                            nbPlayers = 1;
+                            player1 = player2;
+                            socketNb1 = socketNb2;
+
+                          } else {
+
+                            socketNb1.emit("launchFailed", {waitingAgain : false});
+                            socketNb2.emit("launchFailed", {waitingAgain : false});
+                            nbPlayers = 0;
+
+                          }
+                        }
+
+                        gameAvailable = true;
+                        gameWillSoonStart = false;
+                        remainingTime = 0;
+
+                        socketsArray.forEach((element) => {
+                          element.socket.emit("remainingTimeResponse", {remainingTime : remainingTime});	
+                        });
+
+                      }
+
+                      clearInterval(waitingRepeater);
+
+                    }
+                  }, 1000);
+                }
+              
 				//le premier joueur s'est déconnecté entre temps
-				else{
+				else {
+                  
 					nbPlayers--;
 					player1 = token;
 					socketNb1 = socket;
-					//
+					
 				}
 			}
 		}else{
@@ -1157,14 +1177,14 @@ io.on('connection', (socket) => {
 			if(data.pseudo){
 				pseudo1 = data.pseudo;
 			}else{
-				pseudo1 = "anonym";
+				pseudo1 = "anonymous";
 			}
 		}else if(token === player2){
 			playerNumber = 2;
 			if(data.pseudo){
 				pseudo2 = data.pseudo;
 			}else{
-				pseudo2 = "anonym";
+				pseudo2 = "anonymous";
 			}
 		}
 		if(gameWillSoonStart && (playerNumber != 0)){
