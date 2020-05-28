@@ -1166,7 +1166,6 @@ function startGame(){
     var x;
     var sign = "";
     
-    console.log("speed" + water.faucetSpeed);
     // Rounds to the first digit
     water.faucetSpeed = roundNumber(water.faucetSpeed, 1); 
     
@@ -1176,11 +1175,7 @@ function startGame(){
     water.faucetSpeed -= Math.sign(water.faucetSpeed) * water.faucetDecceleration;
     
     x = water.faucetSpeed;
-    
-    console.log("speed" + water.faucetSpeed);
-    
-    
-    
+  
     if (x > 0) { sign = "+ "} else if (x < 0) { sign = "- " }; 
     water.faucetSpeedShow = sign + Math.abs(x);
 
