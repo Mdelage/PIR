@@ -19,7 +19,7 @@ var waitingTime = 15;
 var remainingTime = 0;
 var nbPlayers = 0;
 var nbReadyPlayers = 0;
-var player1 ;
+var player1;
 var socketsArray = [];
 var socketNb1;
 var socketNb2;
@@ -34,14 +34,14 @@ var nbPlayersLogged = 0;
 /*             END VARIABLES         */
 
 /*             GAME DATA             */
-var pseudo1 ;
+var pseudo1;
 var pseudo2;
 
-var player1Datas ;
-var player2Datas ;
+var player1Datas;
+var player2Datas;
 
-var player1DatasToSend ;
-var player2DatasToSend ;
+var player1DatasToSend;
+var player2DatasToSend;
 
 var player1;
 var player2;
@@ -77,7 +77,7 @@ var autonomousExtinguishThreshold = 8;
 var autonomousCollidingThreshold = 5;
 var autonomousCapThreshold = 0.03;
 var autonomousScalarProdThreshold = 0.5;
-var probaAlarms = 0.7
+var probaAlarms = 0.7;
 
 //Intervals
 var socketStates;
@@ -102,76 +102,161 @@ var newBestScore;
 var writeDatasInterval;
 
 var pAlarm;
-/*             END GAME DATA             */       
+/*             END GAME DATA             */
 
 
+function initWater() {
 
-function initWater(){
-	
-	water.leakPlaces  = [];
-	water.noLeakAt  = [];
-	water.previousNoLeakAt  = [];
-	water.leaksReverse  = [];
-	water.leftValues = [];
-	water.leakCounter  = 0;
+  water.leakPlaces  = [];
+  water.noLeakAt  = [];
+  water.previousNoLeakAt  = [];
+  water.leaksReverse  = [];
+  water.leftValues = [];
+  water.leakCounter  = 0;
 
-	water.faucetControl  = 0;
-	water.faucetControlShow = '0';
-	water.direction = 0;
-	water.animTime  = 0;
- 	
-	water.waterWidth = 0;
-	water.callCount  = 0;
-	
-	water.wrenchMode = false;
+  water.faucetControl  = 0;
+  water.faucetControlShow = '0';
+  water.direction = 0;
+  water.animTime  = 0;
 
-	water.xRobinet  = 42;
-	water.coeffSpeed  = 20;
-	water.faucetXAxis = 2 * 10 / 40;
-	water.yRobinet = 0 ;
-	water.coeffXRob = 10;
-	water.constXRob  = 50;
-	water.waterLevelContainer = 50;
+  water.waterWidth = 0;
+  water.callCount  = 0;
 
-    let i;
-	for (i = 0; i < leakPlacesNb; i++) {
-		water.leakPlaces.push(water.leakCounter);
-		water.leakCounter++;
-		water.noLeakAt.push(true);
-		water.previousNoLeakAt.push(true);
-		water.leftValues.push(0);
-		water.leaksReverse.push(0);
-	  }
+  water.wrenchMode = false;
+
+  water.xRobinet  = 42;
+  water.coeffSpeed  = 20;
+  water.faucetXAxis = 2 * 10 / 40;
+  water.yRobinet = 0;
+  water.coeffXRob = 10;
+  water.constXRob  = 50;
+  water.waterLevelContainer = 50;
+
+  var i;
+  for (i = 0; i < leakPlacesNb; i += 1) {
+    water.leakPlaces.push(water.leakCounter);
+    water.leakCounter += 1;
+    water.noLeakAt.push(true);
+    water.previousNoLeakAt.push(true);
+    water.leftValues.push(0);
+    water.leaksReverse.push(0);
+  }
 }
 
-function initSpeeder(player){
+function initSpeeder(player) {
 	player.pos = [75, 60, Math.PI];
 	player.maxWaterLevel = 50;
 	player.waterLevel = 30;
 	player.maxBatteryLevel = 50;
 	player.transSpeed = 20;
-	player.rotSpeed = 1; 
+	player.rotSpeed = 1;
 	player.rotDirection = 0;
 	player.direction = 0;
 	player.role = 'speeder';
 	player.personnalScore = 0;
 }
 
-function initTanker(player){
+function initTanker(player) {
 	player.pos = [75, 40, Math.PI];
 	player.maxWaterLevel = 100;
 	player.waterLevel = 50;
 	player.maxBatteryLevel = 100;
 	player.transSpeed = 15;
-	player.rotSpeed = 0.7; 
+	player.rotSpeed = 0.7;
 	player.rotDirection = 0;
 	player.direction = 0;
 	player.role = 'tanker';
 	player.personnalScore = 0;
 }
 
+function processPosition(player) {
+  if (!player.noBattery) {
 
-function dataProcessing(){
+    var nextPos = {},
+      colliding = false;
+
+    nextPos.x = player.pos[0];
+    nextPos.y = player.pos[1];
+    if (player.direction === 1) {
+      nextPos.x += player.transSpeed * timeStep * Math.cos(player.pos[2]);
+      nextPos.y += player.transSpeed * timeStep * Math.sin(player.pos[2]);
+    } else if (player.direction === -1) {
+      nextPos.x -= 0.5 * player.transSpeed * timeStep * Math.cos(player.pos[2]);
+      nextPos.y -= 0.5 * player.transSpeed * timeStep * Math.sin(player.pos[2]);
+    }
+
+    treesLocations.forEach((tree) => {
+        if(distance(tree, nextPos) < collidingThreshold){
+            colliding = true;
+        }
+    });
+    if(!colliding){
+        player.pos[0] = nextPos.x;
+        player.pos[1] = nextPos.y;
+    }
+    player.pos[2] += player.rotDirection * timeStep * player.rotSpeed; 
+    if(player.pos[2] > Math.PI){
+        player.pos[2] -= 2*Math.PI;
+    }
+    if(player.pos[2] < -Math.PI){
+        player.pos[2] += 2*Math.PI;
+    }
+  }
+
+  var i;
+  for(i = 0; i<2; i += 1){
+      if(player.pos[i] < 0){
+          player.pos[i] = 0;
+      }
+      if(player.pos[i] > 100){
+          player.pos[i] = 100;
+      }
+  }
+
+
+  if(!player.isRefillingBattery && player.pos[0] >= zonesLocations.batteryZone.x && player.pos[0] <= zonesLocations.batteryZone.x + 10 && player.pos[1] >= zonesLocations.batteryZone.y && player.pos[1] <= zonesLocations.batteryZone.y + 10){
+          player.isRefillingBattery = true;
+          player.refillingBatteryInterval = setInterval(() => {
+              if(player.isRefillingBattery && player.pos[0] >= zonesLocations.batteryZone.x && player.pos[0] <= zonesLocations.batteryZone.x + 10 && player.pos[1] >= zonesLocations.batteryZone.y && player.pos[1] <= zonesLocations.batteryZone.y + 10){
+                  if(player.battery/player.maxBatteryLevel*100 < 99 ){
+                      player.battery += 1 * player.maxBatteryLevel/100;
+                  }else{
+                      player.battery = player.maxBatteryLevel;
+                  }
+                  if(player.battery > 20){
+                      player.ownBatteryAlarmSent = false;
+                  }
+              }else{
+                  player.isRefillingBattery = false;
+                  clearInterval(player.refillingBatteryInterval);
+              }
+          }, 50);
+  }
+  if(!player.isRefillingWater && player.pos[0] >= zonesLocations.waterZone.x && player.pos[0] <= zonesLocations.waterZone.x + 10 && player.pos[1] >= zonesLocations.waterZone.y && player.pos[1] <= zonesLocations.waterZone.y + 10){
+      player.isRefillingWater = true;
+      player.refillingWaterInterval = setInterval(() => {
+          if(player.isRefillingWater && player.pos[0] >= zonesLocations.waterZone.x && player.pos[0] <= zonesLocations.waterZone.x + 10 && player.pos[1] >= zonesLocations.waterZone.y && player.pos[1] <= zonesLocations.waterZone.y + 10){
+              if(player.waterLevel  < player.maxWaterLevel && water.waterLevelContainer >= 10 ){
+                  player.waterLevel += 10;
+                  water.waterLevelContainer -= 10
+                  if(player.waterLevel > player.maxWaterLevel){
+                      player.waterLevel = player.maxWaterLevel;
+                  }
+                  if(player.waterLevel >= 21){
+                      player.waterAlarmSent = false;
+                  }
+
+              }
+          }else{
+              player.isRefillingWater = false;
+              clearInterval(player.refillingWaterInterval);
+          }
+      }, 1000);
+}
+
+}
+
+function dataProcessing() {
 	processPosition(player1Datas);
 	processPosition(player2Datas);
 	var player1Pos = { x : player1Datas.pos[0], y : player1Datas.pos[1] };
@@ -189,91 +274,6 @@ function dataProcessing(){
 	}
 	inRange = inRange2
 }
-
-function processPosition(player){
-	if(!player.noBattery){
-		var nextPos = {};
-		nextPos.x = player.pos[0];
-		nextPos.y = player.pos[1];
-		if(player.direction === 1){
-			nextPos.x += player.transSpeed * timeStep * Math.cos(player.pos[2]);
-			nextPos.y += player.transSpeed * timeStep * Math.sin(player.pos[2]);
-		}else if(player.direction === -1){
-			nextPos.x -= 0.5* player.transSpeed * timeStep * Math.cos(player.pos[2]);
-			nextPos.y -= 0.5 * player.transSpeed * timeStep * Math.sin(player.pos[2]);
-		}
-		var colliding = false;
-		treesLocations.forEach( (tree) => {
-			if(distance(tree, nextPos) < collidingThreshold){
-				colliding = true;
-			}
-		});
-		if(!colliding){
-			player.pos[0] = nextPos.x;
-			player.pos[1] = nextPos.y;
-		}
-		player.pos[2] += player.rotDirection * timeStep * player.rotSpeed; 
-		if(player.pos[2] > Math.PI){
-			player.pos[2] -= 2*Math.PI;
-		}
-		if(player.pos[2] < -Math.PI){
-			player.pos[2] += 2*Math.PI;
-		}
-	}
-  
-    let i;
-	for(i = 0; i<2; i++){
-		if(player.pos[i] < 0){
-			player.pos[i] = 0;
-		}
-		if(player.pos[i] > 100){
-			player.pos[i] = 100;
-		}
-	}
-	
-
-	if(!player.isRefillingBattery && player.pos[0] >= zonesLocations.batteryZone.x && player.pos[0] <= zonesLocations.batteryZone.x + 10 && player.pos[1] >= zonesLocations.batteryZone.y && player.pos[1] <= zonesLocations.batteryZone.y + 10){
-			player.isRefillingBattery = true;
-			player.refillingBatteryInterval = setInterval(() => {
-				if(player.isRefillingBattery && player.pos[0] >= zonesLocations.batteryZone.x && player.pos[0] <= zonesLocations.batteryZone.x + 10 && player.pos[1] >= zonesLocations.batteryZone.y && player.pos[1] <= zonesLocations.batteryZone.y + 10){
-					if(player.battery/player.maxBatteryLevel*100 < 99 ){
-						player.battery += 1 * player.maxBatteryLevel/100;
-					}else{
-						player.battery = player.maxBatteryLevel;
-					}
-					if(player.battery > 20){
-						player.ownBatteryAlarmSent = false;
-					}
-				}else{
-					player.isRefillingBattery = false;
-					clearInterval(player.refillingBatteryInterval);
-				}
-			}, 50);
-	}
-	if(!player.isRefillingWater && player.pos[0] >= zonesLocations.waterZone.x && player.pos[0] <= zonesLocations.waterZone.x + 10 && player.pos[1] >= zonesLocations.waterZone.y && player.pos[1] <= zonesLocations.waterZone.y + 10){
-		player.isRefillingWater = true;
-		player.refillingWaterInterval = setInterval(() => {
-			if(player.isRefillingWater && player.pos[0] >= zonesLocations.waterZone.x && player.pos[0] <= zonesLocations.waterZone.x + 10 && player.pos[1] >= zonesLocations.waterZone.y && player.pos[1] <= zonesLocations.waterZone.y + 10){
-				if(player.waterLevel  < player.maxWaterLevel && water.waterLevelContainer >= 10 ){
-					player.waterLevel += 10;
-					water.waterLevelContainer -= 10
-					if(player.waterLevel > player.maxWaterLevel){
-						player.waterLevel = player.maxWaterLevel;
-					}
-					if(player.waterLevel >= 21){
-						player.waterAlarmSent = false;
-					}
-					
-				}
-			}else{
-				player.isRefillingWater = false;
-				clearInterval(player.refillingWaterInterval);
-			}
-		}, 1000);
-}
-
-}
-
 
 var faucetCtrlFctMinus = () => {
     if(water.faucetControl > -3) {
@@ -295,7 +295,7 @@ var faucetCtrlFctMinus = () => {
 
 var faucetCtrlFctPlus = () => {
     if(water.faucetControl < 3) {
-      water.faucetControl++; 
+      water.faucetControl += 1; 
       water.faucetControlShow = water.faucetControl.toString();
     }
     if(water.faucetControl > 0){
@@ -318,7 +318,7 @@ var waterPushButton = () => {
     waterRepeater = setInterval(() => {
       if (water.callCount < 8) {
         water.waterWidth = (7 - water.callCount)/10;
-        water.callCount++;
+        water.callCount += 1;
       } else {
         clearInterval(water.repeater);
       }
@@ -342,10 +342,10 @@ var throwWater = (player, socket) => {
 	if(waterThrowed){
 		var treeExtinguished = false;
       
-        let i;
-        let l = treesLocations.length;
+        var i;
+        var l = treesLocations.length;
       
-		for(i = 0; i < l ; i++) {
+		for(i = 0; i < l ; i += 1) {
 			if(!treeExtinguished && firesStatesOfTrees[i]){
 				playerPos = {x : player.pos[0], y : player.pos[1] };
 				var distanceToTree = distance(treesLocations[i], playerPos);
@@ -606,7 +606,7 @@ function saveScore(){
     var rank = 0;
     
     while(rank<scores.length && scores[rank].score >= teamScore){
-      rank++;
+      rank += 1;
     }
     
     if(rank<10){
@@ -627,8 +627,8 @@ function saveScore(){
       var lastObject = scores[scores.length-1];
       scores.push(lastObject);
       
-      let i;
-      let l = scores.length;
+      var i;
+      var l = scores.length;
       
       for(i = l - 1; i > rank; i--) {
         scores[i].pseudo1 = scores[i-1].pseudo1;
@@ -655,11 +655,11 @@ function finishGame(id){
 
 
 function firesString(){
-  let myString = "'";
-  let l = firesStatesOfTrees.length;
-  let i;
+  var myString = "'";
+  var l = firesStatesOfTrees.length;
+  var i;
   
-  for(i = 0; i < l-1; i++) {
+  for(i = 0; i < l-1; i += 1) {
       myString += firesStatesOfTrees[i].toString() + ',';
   }
   myString += firesStatesOfTrees[l-1].toString() + "'";
@@ -670,8 +670,8 @@ function leakPlacesString(){
 	var myString = "'";
 	var l = water.noLeakAt.length;
   
-    let i;
-	for(i = 0; i < l-1; i++) {
+    var i;
+	for(i = 0; i < l-1; i += 1) {
 		myString += water.noLeakAt[i].toString() + ',';
 	}
   
@@ -755,11 +755,11 @@ function autonomousFunction(player, otherPlayer, inputArray){
 			}else{
 				var distanceMin = 200;
                 
-                let i = 0;
-                let l = treesLocations.length;
-                let nextDistance;
+                var i = 0;
+                var l = treesLocations.length;
+                var nextDistance;
               
-				for(i = 0; i < l; i++) {
+				for(i = 0; i < l; i += 1) {
 					nextDistance = distance(treesLocations[i], playerPos)
 					if(firesStatesOfTrees[i] == 1 &&  nextDistance < distanceMin){
 						player.goalPos = treesLocations[i];
@@ -1049,12 +1049,12 @@ io.on('connection', (socket) => {
 	socket.on("getPlay", (data) => {
       
         //A token for identifying players
-		let token = data.token;
+		var token = data.token;
       
 		if(gameAvailable){
 			socket.emit("accessAuthorized", {});
 			
-			nbPlayers++;
+			nbPlayers += 1;
 			if(nbPlayers === 1){
 				player1 = data.token;
 				socketNb1 = socket;
@@ -1150,7 +1150,7 @@ io.on('connection', (socket) => {
 	});
 
 	socket.on("ready", (data) => {
-		let token = data.token;
+		var token = data.token;
 		var playerNumber = 0
 		if(token === player1){
 			playerNumber = 1;
@@ -1208,7 +1208,7 @@ io.on('connection', (socket) => {
 
 	socket.on('key', (data) => {
         //A token for identifying players
-        let token = data.token;
+        var token = data.token;
       
 		var playerData;
 		if(token === player1){
@@ -1233,10 +1233,10 @@ io.on('connection', (socket) => {
 });
 
 function initGame(){
-  let p;
-  let player1Role;
-  let player2Role;
-  let dirname;
+  var p;
+  var player1Role;
+  var player2Role;
+  var dirname;
 
   socketStates = setInterval( () => {
       if(!socketNb1.connected || !socketNb2.connected){
@@ -1319,10 +1319,10 @@ function initGame(){
 
   firesStatesOfTrees = [];
 
-  let i;
-  let l = treesLocations.length;
+  var i;
+  var l = treesLocations.length;
 
-  for(i = 0; i < l; i++) {
+  for(i = 0; i < l; i += 1) {
       firesStatesOfTrees.push(0);
   }
   player1DatasToSend.fires = firesStatesOfTrees;
@@ -1378,9 +1378,9 @@ function startGame(){
 
   waterFlowInterval = setInterval(() => {
       var leaksSum = 0;
-      let i;
+      var i;
     
-      for(i = 0; i < leakPlacesNb; i++) {
+      for(i = 0; i < leakPlacesNb; i += 1) {
         if(!water.noLeakAt[i]){
           leaksSum = leaksSum + 1;
         }
@@ -1406,10 +1406,10 @@ function startGame(){
           water.noLeakAt[myInt] = false;
         }
     
-        let i;
-        let l = water.leakPlaces.length;
+        var i;
+        var l = water.leakPlaces.length;
     
-        for (i = 0; i < l; i++) {
+        for (i = 0; i < l; i += 1) {
           if (!water.noLeakAt[i] && water.previousNoLeakAt[i]){
             if (Math.random()>0.5){
               water.leaksReverse[i] = -1;
@@ -1428,10 +1428,10 @@ function startGame(){
       var player1Pos = { x : player1Datas.pos[0], y : player1Datas.pos[1]};
       var player2Pos = { x : player2Datas.pos[0], y : player2Datas.pos[1]};
     
-      let i;
-      let l = treesLocations.length;
+      var i;
+      var l = treesLocations.length;
     
-      for(i = 0; i < l; i++) {
+      for(i = 0; i < l; i += 1) {
           if(firesStatesOfTrees[i]){
               var distance1 = distance(treesLocations[i], player1Pos);
               if(distance1 < heatThreshold){
