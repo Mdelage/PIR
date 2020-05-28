@@ -1,3 +1,5 @@
+"use strict";
+
 var express = require("express");
 var app = express();
 var fs = require('fs');
@@ -7,9 +9,11 @@ var mkdirp = require('mkdirp');
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
-//VARIABLES
+/*            VARIABLES             */
+
 var date;
 var wstream;
+var wstreamdialogues;
 var gameTime = 600;
 var waitingTime = 15;
 var remainingTime = 0;
@@ -27,6 +31,7 @@ var gameWillSoonStart = false;
 
 
 var nbPlayersLogged = 0;
+/*             END VARIABLES         */
 
 /*             GAME DATA             */
 var pseudo1 ;
@@ -38,11 +43,19 @@ var player2Datas ;
 var player1DatasToSend ;
 var player2DatasToSend ;
 
-var water ;
+var player1;
+var player2;
+
+//Number representing the position of the current player
+var playerPos;
+
+var water;
 
 var treesLocations;
 var zonesLocations;
 
+//Boolean array telling if a given tree is on fire
+var firesStatesOfTrees;
 
 var timeStep = 0.02;
 var leakPlacesNb = 9;
@@ -120,7 +133,8 @@ function initWater(){
 	water.constXRob  = 50;
 	water.waterLevelContainer = 50;
 
-	for (var i=0; i < leakPlacesNb; i++) {
+    let i;
+	for (i = 0; i < leakPlacesNb; i++) {
 		water.leakPlaces.push(water.leakCounter);
 		water.leakCounter++;
 		water.noLeakAt.push(true);
@@ -206,7 +220,9 @@ function processPosition(player){
 			player.pos[2] += 2*Math.PI;
 		}
 	}
-	for(var i = 0; i<2; i++){
+  
+    let i;
+	for(i = 0; i<2; i++){
 		if(player.pos[i] < 0){
 			player.pos[i] = 0;
 		}
@@ -259,7 +275,7 @@ function processPosition(player){
 }
 
 
-faucetCtrlFctMinus = () => {
+var faucetCtrlFctMinus = () => {
     if(water.faucetControl > -3) {
       water.faucetControl--; 
       water.faucetControlShow = water.faucetControl.toString();
@@ -277,7 +293,7 @@ faucetCtrlFctMinus = () => {
     water.animTime = 10 - Math.abs(water.faucetControl)*3;
 };
 
-faucetCtrlFctPlus = () => {
+var faucetCtrlFctPlus = () => {
     if(water.faucetControl < 3) {
       water.faucetControl++; 
       water.faucetControlShow = water.faucetControl.toString();
@@ -295,7 +311,7 @@ faucetCtrlFctPlus = () => {
     water.animTime = 7 - Math.abs(water.faucetControl)*2;
 };
 
-waterPushButton = () => {
+var waterPushButton = () => {
     water.waterWidth = 7/10;
     water.callCount = 1;
     clearInterval(waterRepeater);
@@ -309,7 +325,7 @@ waterPushButton = () => {
     }, 1000);
 };
 
-throwWater = (player, socket) => {
+var throwWater = (player, socket) => {
 	var waterThrowed = false;
 	if(player.waterLevel >= 10){
 		player.waterLevel -= 10;
@@ -325,9 +341,13 @@ throwWater = (player, socket) => {
 	}
 	if(waterThrowed){
 		var treeExtinguished = false;
-		for(var i = 0; i <treesLocations.length; i++){
+      
+        let i;
+        let l = treesLocations.length;
+      
+		for(i = 0; i < l ; i++) {
 			if(!treeExtinguished && firesStatesOfTrees[i]){
-				var playerPos = {x : player.pos[0], y : player.pos[1] };
+				playerPos = {x : player.pos[0], y : player.pos[1] };
 				var distanceToTree = distance(treesLocations[i], playerPos);
 				if( distanceToTree < extinguishThreshold){
 
@@ -356,13 +376,13 @@ function clickLeak(leakId) {
 	}
 }
 
-wrenchOnOff = () => water.wrenchMode = !water.wrenchMode;
+var wrenchOnOff = () => water.wrenchMode = !water.wrenchMode;
 
 function distance(point1, point2){
 	return Math.sqrt(Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2));
 }
 
-sendMessage = (id, token) => {
+var sendMessage = (id, token) => {
 	if(token == player1){
 		socketNb1.emit("message", {id : id, status : 'textSent'});
 		socketNb2.emit("message", {id : id, status : 'textReceived'});
@@ -373,7 +393,7 @@ sendMessage = (id, token) => {
 	}
 }
 
-trySendWater = (token) => {
+var trySendWater = (token) => {
 	var giver = (token == player1) ? player1Datas : player2Datas;
 	var receiver = (token == player1) ? player2Datas : player1Datas;
 	var receiverSocket = (token == player1) ? socketNb2 : socketNb1;
@@ -412,7 +432,7 @@ trySendWater = (token) => {
 	}
 }
 
-tryReceiveWater = (token) => {
+var tryReceiveWater = (token) => {
 	var giver = (token == player2) ? player1Datas : player2Datas;
 	var receiver = (token == player2) ? player2Datas : player1Datas;
 	var giverSocket = (token == player2) ? socketNb1 : socketNb2;
@@ -451,7 +471,7 @@ tryReceiveWater = (token) => {
 	}
 }
 
-trySendBattery = (token) => {
+var trySendBattery = (token) => {
 	var giver = (token == player1) ? player1Datas : player2Datas;
 	var receiver = (token == player1) ? player2Datas : player1Datas;
 	var receiverSocket = (token == player1) ? socketNb2 : socketNb1;
@@ -490,7 +510,7 @@ trySendBattery = (token) => {
 	}
 }
 
-tryReceiveBattery = (token) => {
+var tryReceiveBattery = (token) => {
 	var giver = (token == player2) ? player1Datas : player2Datas;
 	var receiver = (token == player2) ? player2Datas : player1Datas;
 	var giverSocket = (token == player2) ? socketNb1 : socketNb2;
@@ -606,7 +626,11 @@ function saveScore(){
     }else{ 
       var lastObject = scores[scores.length-1];
       scores.push(lastObject);
-      for(var i=scores.length-1; i>rank; i--){
+      
+      let i;
+      let l = scores.length;
+      
+      for(i = l - 1; i > rank; i--) {
         scores[i].pseudo1 = scores[i-1].pseudo1;
 				scores[i].score1 = scores[i-1].score1;
 				scores[i].pseudo2 = scores[i-1].pseudo2;
@@ -631,21 +655,26 @@ function finishGame(id){
 
 
 function firesString(){
-	var myString = "'";
-	var l = firesStatesOfTrees.length;
-	for(var i = 0; i < l-1; i++ ){
-		myString += firesStatesOfTrees[i].toString() + ',';
-	}
-	myString += firesStatesOfTrees[l-1].toString() + "'";
-	return myString;
+  let myString = "'";
+  let l = firesStatesOfTrees.length;
+  let i;
+  
+  for(i = 0; i < l-1; i++) {
+      myString += firesStatesOfTrees[i].toString() + ',';
+  }
+  myString += firesStatesOfTrees[l-1].toString() + "'";
+  return myString;
 }
 
 function leakPlacesString(){
 	var myString = "'";
 	var l = water.noLeakAt.length;
-	for(var i = 0; i < l-1; i++ ){
+  
+    let i;
+	for(i = 0; i < l-1; i++) {
 		myString += water.noLeakAt[i].toString() + ',';
 	}
+  
 	myString += water.noLeakAt[l-1].toString() + "'";
 	return myString;
 }
@@ -725,8 +754,13 @@ function autonomousFunction(player, otherPlayer, inputArray){
 				player.goalPos = { x : zonesLocations.waterZone.x + 5, y : zonesLocations.waterZone.y + 5};
 			}else{
 				var distanceMin = 200;
-				for(var i = 0; i < treesLocations.length; i++){
-					var nextDistance = distance(treesLocations[i], playerPos)
+                
+                let i = 0;
+                let l = treesLocations.length;
+                let nextDistance;
+              
+				for(i = 0; i < l; i++) {
+					nextDistance = distance(treesLocations[i], playerPos)
 					if(firesStatesOfTrees[i] == 1 &&  nextDistance < distanceMin){
 						player.goalPos = treesLocations[i];
 						distanceMin = nextDistance;
@@ -875,23 +909,23 @@ function scalarProduct(point1, point2){
 /* Functions used inside inputArray */
 
 //Function for when the player presses the up or down arrows
-forwardBackward = (playerData, dir) => {
+var forwardBackward = (playerData, dir) => {
   if (!playerData.autonomousMode) { playerData.direction = dir; }
 };
 
 //Function for when the player presses the right or left arrows
-rightLeft = (playerData, dir) => {
+var rightLeft = (playerData, dir) => {
   if (!playerData.autonomousMode) { playerData.rotDirection = dir; }
 };
 
 //Function for when the player wants to send messages
-messageToSent = (playerData, nbrMessage, token, message) => {
+var messageToSent = (playerData, nbrMessage, token, message) => {
   sendMessage(nbrMessage, token);
   wstreamdialogues.write(remainingTime + ' : ' + playerData.role + ' : ' + message + '\n');
 };
 
 /* This is the list of all the inputs the server can register. */
-inputArray = {
+const inputArray = {
   
   //When the player presses the up arrow
   keyupDown : (playerData, token, socket) => forwardBackward(playerData, 1),
@@ -903,7 +937,7 @@ inputArray = {
   keydownDown : (playerData, token, socket) => forwardBackward(playerData, -1),
 
   //When the player releases the down arrow
-  keydownUp : this.keyupUp,
+  keydownUp : (playerData, token, socket) => forwardBackward(playerData, 0),
 
 
   //When the player presses the right arrow
@@ -916,7 +950,7 @@ inputArray = {
   keyleftDown : (playerData, token, socket) => rightLeft(playerData, -1),
 
   //When the player releases the left arrow
-  keyleftUp : this.keyrightUp,
+  keyleftUp : (playerData, token, socket) => rightLeft(playerData, 0),
     
 
   //When the player presses a
@@ -1013,7 +1047,10 @@ io.on('connection', (socket) => {
 	//traitement lors d'une requete pour jouer (redirection vers la page de chargement 
 	// et lancement ou non d'un timer)
 	socket.on("getPlay", (data) => {
-		var token = data.token;
+      
+        //A token for identifying players
+		let token = data.token;
+      
 		if(gameAvailable){
 			socket.emit("accessAuthorized", {});
 			
@@ -1037,7 +1074,7 @@ io.on('connection', (socket) => {
 					gameWillSoonStart = true;
 					player1Ready = false;
 					player2Ready = false;
-					waitingTime = 15;
+					waitingTime = 5;
 					
 					nbReadyPlayers = 0;
 					pseudo1 = '';
@@ -1113,7 +1150,7 @@ io.on('connection', (socket) => {
 	});
 
 	socket.on("ready", (data) => {
-		token = data.token;
+		let token = data.token;
 		var playerNumber = 0
 		if(token === player1){
 			playerNumber = 1;
@@ -1170,8 +1207,11 @@ io.on('connection', (socket) => {
 	});
 
 	socket.on('key', (data) => {
+        //A token for identifying players
+        let token = data.token;
+      
 		var playerData;
-		if(data.token === player1){
+		if(token === player1){
 			playerData = player1Datas;
 		}else{
 			playerData = player2Datas;
@@ -1186,99 +1226,109 @@ io.on('connection', (socket) => {
         
         /* That if is to prevent an undefined key to call a function
         which would raise an exception. */
-        if (inputArray["key" + key]) { inputArray["key" + key](playerData, data.token, socket); }
+        if (inputArray["key" + key]) { inputArray["key" + key](playerData, token, socket); }
       
 	});
   
 });
 
 function initGame(){
-	socketStates = setInterval( () => {
-		if(!socketNb1.connected || !socketNb2.connected){
-			finishGame(2);
-		}
-	}, 1000);
-	teamScore = 0;
-	newBestScore = false;
-	player1Datas = {};
-	player2Datas = {};
-	player1DatasToSend = {};
-	player2DatasToSend = {};
-	player1Datas.socket = socketNb1;
-	player2Datas.socket = socketNb2;
-	water = {};
+  let p;
+  let player1Role;
+  let player2Role;
+  let dirname;
 
-	var p = Math.random();
-	if(p > 0.5){
-		player1Role = 'tanker';
-		socketNb1.emit('role', 'tanker');
-		initTanker(player1Datas);
-		player2Role = 'speeder';
-		socketNb2.emit('role', 'speeder');
-		initSpeeder(player2Datas);
-	}else{
-		player1Role = 'speeder';
-		socketNb1.emit('role', 'speeder');
-		initSpeeder(player1Datas);
-		player2Role ='tanker';
-		socketNb2.emit('role', 'tanker');
-		initTanker(player2Datas);
-	}
+  socketStates = setInterval( () => {
+      if(!socketNb1.connected || !socketNb2.connected){
+          finishGame(2);
+      }
+  }, 1000);
+  teamScore = 0;
+  newBestScore = false;
+  player1Datas = {};
+  player2Datas = {};
+  player1DatasToSend = {};
+  player2DatasToSend = {};
+  player1Datas.socket = socketNb1;
+  player2Datas.socket = socketNb2;
+  water = {};
 
-	date = new Date();
-	dirname = 'records/record_' + date.getFullYear() + '_' + ('0' + (date.getMonth()+1)).slice(-2) + '_' + ('0' + date.getDate()).slice(-2) + '__' + ('0' + date.getHours()).slice(-2) + '_' + ('0' + date.getMinutes()).slice(-2);
-	mkdirp.sync(dirname, function(err){});
-	wstream = fs.createWriteStream(dirname + '/datas.txt');
-	wstream.write('#robot1 : ' + player1Role + ', robot2 : ' + player2Role + '\n');
-	wstream.write('# remaining_time, trees_state, global_score, ground_tank_water_level, leaks, personnal_score1, autonomous1, alarms1, robot1_x, robot1_y, robot1_theta, robot1_battery, robot1_temperature, robot1_waterlevel, robot1_shortkeys, robot1_clicks, personnal_score2, autonomous2, alarms2, robot2_x, robot2_y, robot2_theta, robot2_battery, robot2_temperature, robot2_waterlevel, robot2_shortkeys, robot2_clicks  \n');
-	wstreamdialogues = fs.createWriteStream(dirname + '/dialogues.txt');
-	isFinished = false;
-	remainingTime = 600;
-	
-	player1DatasToSend.pos = player1Datas.pos;
-	player1DatasToSend.other = player2Datas.pos;
-	player1DatasToSend.water = water;	
-	player1Datas.battery = player1Datas.maxBatteryLevel;
-	player1Datas.noBattery = false;
-	player1Datas.autonomousMode = false;
-	player1Datas.previouslyAutonomous = false;
-	
+  p = Math.random();
 
-	player2DatasToSend.pos = player2Datas.pos;
-	player2DatasToSend.other = player1Datas.pos;
-	player2DatasToSend.water = water;
-	player2DatasToSend.remainingTime = remainingTime;
-	player2Datas.battery = player2Datas.maxBatteryLevel;
-	player2Datas.noBattery = false;
-	player2Datas.autonomousMode = false;
-	player2Datas.previouslyAutonomous = false;
+  if(p > 0.5){
+      player1Role = 'tanker';
+      socketNb1.emit('role', 'tanker');
+      initTanker(player1Datas);
+      player2Role = 'speeder';
+      socketNb2.emit('role', 'speeder');
+      initSpeeder(player2Datas);
+  }else{
+      player1Role = 'speeder';
+      socketNb1.emit('role', 'speeder');
+      initSpeeder(player1Datas);
+      player2Role ='tanker';
+      socketNb2.emit('role', 'tanker');
+      initTanker(player2Datas);
+  }
+
+  date = new Date();
+  dirname = 'records/record_' + date.getFullYear() + '_' + ('0' + (date.getMonth()+1)).slice(-2) + '_' + ('0' + date.getDate()).slice(-2) + '__' + ('0' + date.getHours()).slice(-2) + '_' + ('0' + date.getMinutes()).slice(-2);
+  mkdirp.sync(dirname, function(err){});
+  wstream = fs.createWriteStream(dirname + '/datas.txt');
+  wstream.write('#robot1 : ' + player1Role + ', robot2 : ' + player2Role + '\n');
+  wstream.write('# remaining_time, trees_state, global_score, ground_tank_water_level, leaks, personnal_score1, autonomous1, alarms1, robot1_x, robot1_y, robot1_theta, robot1_battery, robot1_temperature, robot1_waterlevel, robot1_shortkeys, robot1_clicks, personnal_score2, autonomous2, alarms2, robot2_x, robot2_y, robot2_theta, robot2_battery, robot2_temperature, robot2_waterlevel, robot2_shortkeys, robot2_clicks  \n');
+  wstreamdialogues = fs.createWriteStream(dirname + '/dialogues.txt');
+  isFinished = false;
+  remainingTime = 600;
+
+  player1DatasToSend.pos = player1Datas.pos;
+  player1DatasToSend.other = player2Datas.pos;
+  player1DatasToSend.water = water;	
+  player1Datas.battery = player1Datas.maxBatteryLevel;
+  player1Datas.noBattery = false;
+  player1Datas.autonomousMode = false;
+  player1Datas.previouslyAutonomous = false;
 
 
-	player1Datas.stringWriteAlarms = "'";
-	player2Datas.stringWriteAlarms = "'";
-	player1Datas.stringWriteClicks = "'";
-	player2Datas.stringWriteClicks = "'";
-	player1Datas.stringWriteUsedKeys = "'";
-	player2Datas.stringWriteUsedKeys = "'";
-	
-	
+  player2DatasToSend.pos = player2Datas.pos;
+  player2DatasToSend.other = player1Datas.pos;
+  player2DatasToSend.water = water;
+  player2DatasToSend.remainingTime = remainingTime;
+  player2Datas.battery = player2Datas.maxBatteryLevel;
+  player2Datas.noBattery = false;
+  player2Datas.autonomousMode = false;
+  player2Datas.previouslyAutonomous = false;
 
-	initWater();
 
-	var chaine = fs.readFileSync('trees.json', 'UTF-8');
-	treesLocations = JSON.parse(chaine);
+  player1Datas.stringWriteAlarms = "'";
+  player2Datas.stringWriteAlarms = "'";
+  player1Datas.stringWriteClicks = "'";
+  player2Datas.stringWriteClicks = "'";
+  player1Datas.stringWriteUsedKeys = "'";
+  player2Datas.stringWriteUsedKeys = "'";
 
-	chaine = fs.readFileSync('zones.json' , 'UTF-8');
-	zonesLocations = JSON.parse(chaine);
 
-	firesStatesOfTrees = [];
-	for(var i = 0; i < treesLocations.length; i++){
-		firesStatesOfTrees.push(0);
-	}
-	player1DatasToSend.fires = firesStatesOfTrees;
-	player2DatasToSend.fires = firesStatesOfTrees;
-	player1Datas.temperature = 0;
-	player2Datas.temperature = 0;
+
+  initWater();
+
+  var chaine = fs.readFileSync('trees.json', 'UTF-8');
+  treesLocations = JSON.parse(chaine);
+
+  chaine = fs.readFileSync('zones.json' , 'UTF-8');
+  zonesLocations = JSON.parse(chaine);
+
+  firesStatesOfTrees = [];
+
+  let i;
+  let l = treesLocations.length;
+
+  for(i = 0; i < l; i++) {
+      firesStatesOfTrees.push(0);
+  }
+  player1DatasToSend.fires = firesStatesOfTrees;
+  player2DatasToSend.fires = firesStatesOfTrees;
+  player1Datas.temperature = 0;
+  player2Datas.temperature = 0;
 }
 
 function startGame(){
@@ -1328,7 +1378,9 @@ function startGame(){
 
   waterFlowInterval = setInterval(() => {
       var leaksSum = 0;
-      for(var i = 0; i < leakPlacesNb; i++) {
+      let i;
+    
+      for(i = 0; i < leakPlacesNb; i++) {
         if(!water.noLeakAt[i]){
           leaksSum = leaksSum + 1;
         }
@@ -1353,7 +1405,11 @@ function startGame(){
           var myInt = Math.floor(Math.random()* leakPlacesNb);
           water.noLeakAt[myInt] = false;
         }
-        for (var i=0 ; i < water.leakPlaces.length ; i++){
+    
+        let i;
+        let l = water.leakPlaces.length;
+    
+        for (i = 0; i < l; i++) {
           if (!water.noLeakAt[i] && water.previousNoLeakAt[i]){
             if (Math.random()>0.5){
               water.leaksReverse[i] = -1;
@@ -1371,7 +1427,11 @@ function startGame(){
       var heatIncrement2 = baseIncrement;
       var player1Pos = { x : player1Datas.pos[0], y : player1Datas.pos[1]};
       var player2Pos = { x : player2Datas.pos[0], y : player2Datas.pos[1]};
-      for(var i = 0; i < treesLocations.length; i++){
+    
+      let i;
+      let l = treesLocations.length;
+    
+      for(i = 0; i < l; i++) {
           if(firesStatesOfTrees[i]){
               var distance1 = distance(treesLocations[i], player1Pos);
               if(distance1 < heatThreshold){
