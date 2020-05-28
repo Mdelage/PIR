@@ -14,7 +14,7 @@ var io = require('socket.io')(server);
 var date;
 var wstream;
 var wstreamdialogues;
-var gameTime = 600;
+var gameTime = 300;
 var waitingTime = 15;
 var remainingTime = 0;
 var nbPlayers = 0;
