@@ -80,8 +80,8 @@ var autonomousCapThreshold = 0.03;
 var autonomousScalarProdThreshold = 0.5;
 var probaAlarms = 0.7;
 
-var temperatureMax = 1000000; // Default value: 1000
-var batteryMax = 1000000; // Default value: 1000
+var temperatureMax = 1000; // Default value: 1000
+var batteryMax = 1000; // Default value: 1000
 
 //Intervals
 var socketStates;
@@ -119,8 +119,14 @@ function initWater() {
   water.leakCounter  = 0;
 
   // Corresponds to the speed of the faucet
-  water.faucetControl  = 0;
-  water.faucetControlShow = '0';
+  water.faucetSpeed = 0;
+  water.faucetSpeedShow = '0';
+  // The maximum speed of the faucet
+  water.faucetMaxSpeed = 3;
+  // The acceleration of the faucet when pressing s or d
+  water.faucetAcceleration = 0.5;
+  // The natural decceleration of the faucet when idle
+  water.faucetDecceleration = 0.1;
   
   // Corresponds to the direction the faucet is going toward
   water.direction = 0;
@@ -283,45 +289,37 @@ function dataProcessing() {
 	inRange = inRange2
 }
 
-var faucetCtrlFctMinus = () => {
-  
-  var x = water.faucetControl;
-  
-  if(x > -3) {
-    
-    water.faucetControl -= 1; 
-    water.faucetControlShow = water.faucetControl.toString();
-    
-    water.direction = Math.sign(x);
-    
-    if (x > 0) {
-      water.faucetControlShow = '+' + water.faucetControlShow;
-    }
-    
-  }
-
-  water.animTime = 10 - Math.abs(x)*3;
-
+//This function rounds to a given amount of digits a number x
+var roundNumber = (x, digits) => {
+  var tens = 10 * digits;
+  return Math.round((x + Number.EPSILON) * tens) / tens;
 };
 
-var faucetCtrlFctPlus = () => {
+var faucetSpeedDown = () => {
   
-  var x = water.faucetControl;
+  var x = water.faucetSpeed;
   
-  if(x < 3) {
-    
-    water.faucetControl += 1; 
-    water.faucetControlShow = water.faucetControl.toString();
-    
-    water.direction = Math.sign(x);
-    
-    if (x > 0) {
-      water.faucetControlShow = '+' + water.faucetControlShow;
-    }
-    
-  }
+  water.faucetSpeed = Math.max(
+    -water.faucetMaxSpeed,
+    roundNumber(x - water.faucetAcceleration, 1)
+  );
+  
+  water.direction = Math.sign(x);
+  water.animTime = 10 - Math.abs(x)*3;
+  
+};
 
-  water.animTime = 7 - Math.abs(x)*2;
+var faucetSpeedUp = () => {
+  
+  var x = water.faucetSpeed;
+  
+  water.faucetSpeed = Math.min(
+    water.faucetMaxSpeed,
+    roundNumber(x + water.faucetAcceleration, 1)
+  ); 
+  
+  water.direction = Math.sign(x);
+  water.animTime = 10 - Math.abs(x)*3;
 
 };
 
@@ -974,10 +972,10 @@ const inputArray = {
   keye : (playerData, token, socket) => waterPushButton(),
 
   //When the player presses s
-  keys : (playerData, token, socket) => faucetCtrlFctMinus(),
+  keys : (playerData, token, socket) => faucetSpeedDown(),
 
   //When the player presses d
-  keyd : (playerData, token, socket) => faucetCtrlFctPlus(),
+  keyd : (playerData, token, socket) => faucetSpeedUp(),
 
   //When the player presses space
   keyspace : (playerData, token, socket) => {
@@ -1165,15 +1163,35 @@ function startGame(){
   }, 20);
 
   waterManagementInterval = setInterval(() => {
+    var x;
+    var sign = "";
+    
+    console.log("speed" + water.faucetSpeed);
+    // Rounds to the first digit
+    water.faucetSpeed = roundNumber(water.faucetSpeed, 1); 
+    
+    /* Decreasing of the speed.
+    When it's negative, we add the decceleration.
+    When it's positive, we substract the decceleration. */
+    water.faucetSpeed -= Math.sign(water.faucetSpeed) * water.faucetDecceleration;
+    
+    x = water.faucetSpeed;
+    
+    console.log("speed" + water.faucetSpeed);
+    
+    
+    
+    if (x > 0) { sign = "+ "} else if (x < 0) { sign = "- " }; 
+    water.faucetSpeedShow = sign + Math.abs(x);
 
+    water.xRobinet += water.coeffSpeed * (Math.PI / 80) * Math.sin(Math.PI * water.xRobinet / 40 - Math.PI) + x;
     //Keeps xRobinet between 0 and 80
     water.xRobinet = Math.min(Math.max(water.xRobinet, 0), 80);
-    water.xRobinet = water.xRobinet + water.coeffSpeed * (Math.PI / 80) * Math.sin(Math.PI * water.xRobinet / 40 - Math.PI) + water.faucetControl;
 
     //water.xRobinet += water.decal;
     water.faucetXAxis = (water.xRobinet - 40) * 10 / 40;
     water.yRobinet = water.coeffXRob * Math.cos(water.faucetXAxis* Math.PI *2 / 20) + water.constXRob;
-
+    
   }, 200);
 
   waterFlowInterval = setInterval(() => {
