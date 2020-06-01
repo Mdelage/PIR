@@ -14,136 +14,25 @@ export class MainComponent implements OnInit, OnDestroy {
 
   
 
-
+  // What to send to the server when pushing a key
   @HostListener('document:keydown', ['$event']) onKeydown(event : KeyboardEvent) {
     
     this.keyArray["keyDown" + event.keyCode]();
-    /*if(event.keyCode === 38 && !this.upPressed ){
-      this.upPressed = true;
-      this.downPressed = false;
-      this.socketService.sendKey('upDown');
-    }else if(event.keyCode === 40 && !this.downPressed){
-      this.downPressed = true;
-      this.upPressed = false;
-      this.socketService.sendKey('downDown');
-    }else if(event.keyCode === 37 && !this.leftPressed){
-      this.leftPressed = true;
-      this.rightPressed = false;
-      this.socketService.sendKey('leftDown');
-    }else if(event.keyCode === 39 && !this.rightPressed){
-      this.rightPressed = true;
-      this.leftPressed = false;
-      this.socketService.sendKey('rightDown');
-    }else if(event.keyCode === 65 && !this.aPressed){
-      this.aPressed = true;
-      this.socketService.sendKey('a');
-    }else if(event.keyCode === 83 && !this.sPressed){
-      this.sPressed = true;
-      this.socketService.sendKey('s');
-    }else if(event.keyCode === 68 && !this.dPressed){
-      this.dPressed = true;
-      this.socketService.sendKey('d');
-    }else if(event.keyCode === 69 && !this.ePressed){
-      this.ePressed = true;
-      this.socketService.sendKey('e');
-    }else if(event.keyCode === 32 && !this.spacePressed){
-      this.spacePressed = true;
-      this.socketService.sendKey('space');
-    }else if(event.keyCode === 87 && !this.onePressed){
-      this.onePressed = true;
-      this.socketService.sendKey('1');
-    }else if(event.keyCode === 88 && !this.twoPressed){
-      this.twoPressed = true;
-      this.socketService.sendKey('2');
-    }else if(event.keyCode === 67 && !this.threePressed){
-      this.threePressed = true;
-      this.socketService.sendKey('3');
-    }else if(event.keyCode === 86 && !this.fourPressed){
-      this.fourPressed = true;
-      this.socketService.sendKey('4');
-    }else if(event.keyCode === 66 && !this.fivePressed){
-      this.fivePressed = true;
-      this.socketService.sendKey('5');
-    }else if(event.keyCode === 78 && !this.sixPressed){
-      this.sixPressed = true;
-      this.socketService.sendKey('6');
-    }else if(event.keyCode === 82 && !this.rPressed){
-      this.rPressed = true;
-      this.socketService.sendKey('rDown');
-    }else if(event.keyCode === 84 && !this.tPressed){
-      this.tPressed = true;
-      this.socketService.sendKey('tDown');
-    }else if(event.keyCode === 70 && !this.fPressed){
-      this.fPressed = true;
-      this.socketService.sendKey('fDown');
-    }else if(event.keyCode === 71 && !this.gPressed){
-      this.gPressed = true;
-      this.socketService.sendKey('gDown');
-    }*/
-    
     
   }
 
+  // What to send to the server when releasing a key
   @HostListener('document:keyup', ['$event']) onKeyup(event : KeyboardEvent) {
     
     this.keyArray["keyUp" + event.keyCode]();
-    /*if(event.keyCode === 38 && this.upPressed){
-      this.upPressed = false;
-      this.socketService.sendKey('upUp');
-    }else if(event.keyCode === 40 && this.downPressed){
-      this.downPressed = false;
-      this.socketService.sendKey('downUp');
-    }else if(event.keyCode === 37 && this.leftPressed){
-      this.leftPressed = false;
-      this.socketService.sendKey('leftUp');
-    }else if(event.keyCode === 39 && this.rightPressed){
-      this.rightPressed = false;
-      this.socketService.sendKey('rightUp');
-    }else if(event.keyCode === 65){
-      this.aPressed = false;    
-    }else if(event.keyCode === 83){
-      this.sPressed = false;    
-    }else if(event.keyCode === 68){
-      this.dPressed = false;    
-    }else if(event.keyCode === 69){
-      this.ePressed = false;    
-    }else if(event.keyCode === 32){
-      this.spacePressed = false;    
-    }else if(event.keyCode === 87){
-      this.onePressed = false;    
-    }else if(event.keyCode === 88){
-      this.twoPressed = false;    
-    }else if(event.keyCode === 67){
-      this.threePressed = false;    
-    }else if(event.keyCode === 86){
-      this.fourPressed = false;    
-    }else if(event.keyCode === 66){
-      this.fivePressed = false;    
-    }else if(event.keyCode === 78){
-      this.sixPressed = false;    
-    }else if(event.keyCode === 82 && this.rPressed){
-      this.rPressed = false;
-      this.socketService.sendKey('rUp');
-    }else if(event.keyCode === 84 && this.tPressed){
-      this.tPressed = false;
-      this.socketService.sendKey('tUp');
-    }else if(event.keyCode === 70 && this.fPressed){
-      this.fPressed = false;
-      this.socketService.sendKey('fUp');
-    }else if(event.keyCode === 71 && this.gPressed){
-      this.gPressed = false;
-      this.socketService.sendKey('gUp');
-    }*/
+    
   }
 
   @HostListener('window:popstate', ['$event'])  onPopState(event) {
     this.globalDatasService.popState = true;
   }
 
-  
-
-  
-  
+  /*            PROPERTIES              */
   language : string;
   wrenchMode : boolean = false;
   alarmOverlayOpen : boolean = false;
@@ -249,7 +138,8 @@ export class MainComponent implements OnInit, OnDestroy {
   alarmsSubscription : Subscription;
   gameOverSubscription : Subscription;
   
-  // This associative array is used to send inputs when you're pressing and releasing keys
+  /* This associative array is used to send inputs
+  when you're pressing and releasing keys */
   keyArray : object = {
     
     // up pushed
@@ -529,6 +419,33 @@ export class MainComponent implements OnInit, OnDestroy {
     }
   }
   
+  /* This one is used when sending messages */
+  messageArray : object = {
+    
+    english1 : () => { return "Go fill the water tank." },
+    english2 : () => { return "I'm going to refuel my water." },
+    english3 : () => { return "I need water." },
+    english4 : () => { return "I need energy." },
+    english5 : () => { return "Ok" },
+    english6 : () => { return "No" },
+    english7 : () => { return "The other player is trying to give you water." },
+    english8 : () => { return "The other player wants water." },
+    english9 : () => { return "The other player is trying to give you energy." },
+    english10 : () => { return "The other player wants energy." },
+    
+    french1 : () => { return "Va remplir le réservoir d'eau." },
+    french2 : () => { return "Je vais recharger mon eau." },
+    french3 : () => { return "J'ai besoin d'eau." },
+    french4 : () => { return "J'ai besoin d'énergie." },
+    french5 : () => { return "Ok" },
+    french6 : () => { return "Non" },
+    french7 : () => { return "L'autre joueur veut vous donner de l'eau." },
+    french8 : () => { return "L'autre joueur veut de l'eau." },
+    french9 : () => { return "L'autre joueur veut vous donner de l'énergie." },
+    french10 : () => { return "L'autre joueur veut de l'énergie." }
+  }
+  
+  /*            END PROPERTIES              */
 
   constructor(private globalDatasService : GlobalDatasService, private socketService : SocketService, private router : Router) { }
 
@@ -567,61 +484,9 @@ export class MainComponent implements OnInit, OnDestroy {
     });
 
     this.messagesSubscription = this.socketService.onMessage().subscribe((data) => {
-      var messageStr ;
-      switch(data.id){
-        case 1: {
-          if (this.language=='english') {messageStr = "Please refill water tank"}
-          else if (this.language=='french') {messageStr = "Remplis le réservoir"};
-          break;
-        }
-        case 2: {
-          if (this.language=='english') {messageStr = "I'm going to refuel"}
-          else if (this.language=='french') {messageStr = "Je vais recharger"};
-          break;
-        }
-        case 3: {
-          if (this.language=='english') {messageStr = "Need water"}
-          else if (this.language=='french') {messageStr = "J'ai besoin d'eau"};
-          break;
-        }
-        case 4: {
-          if (this.language=='english') {messageStr = "Need electricity"}
-          else if (this.language=='french') {messageStr = "J'ai besoin de de batterie"};
-          break;
-        }
-        case 5: {
-          messageStr = "Ok";
-          break;
-        }
-        case 6: {
-          if (this.language=='english') {messageStr = "No"}
-          else if (this.language=='french') {messageStr = "Non"};
-          break;
-        }
-        case 7: {
-          if (this.language=='english') {messageStr = "Other player try to give water"}
-          else if (this.language=='french') {messageStr = "L'autre joueur veut partager son eau"};
-          break;
-        }
-        case 8: {
-          if (this.language=='english') {messageStr = "Other player try to receive water"}
-          else if (this.language=='french') {messageStr = "L'autre joueur veut recevoir de l'eau"};
-          break;
-        }
-        case 9: {
-          if (this.language=='english') {messageStr = "Other player try to give electricity"}
-          else if (this.language=='french') {messageStr = "L'autre joueur veut partager sa batterie"};
-          break;
-        }
-        case 10: {
-          if (this.language=='english') {messageStr = "Other player try to receive electricity"}
-          else if (this.language=='french') {messageStr = "L'autre joueur veut recevoir de la batterie"};
-          break;
-        }
-        default: {
-          break;
-        }
-      }
+      
+      var messageStr = this.messageArray[this.language + data.id]();
+      console.log(messageStr);
       this.messages.push({value : messageStr, status : data.status});
       
     });
