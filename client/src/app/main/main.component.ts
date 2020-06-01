@@ -12,13 +12,16 @@ import { Subscription } from 'rxjs';
 })
 export class MainComponent implements OnInit, OnDestroy {
 
+  
+
 
   @HostListener('document:keydown', ['$event']) onKeydown(event : KeyboardEvent){
-    if(event.keyCode === 38 && !this.upPressed ){
+    this.keyDownArray["keyDown" + event.keyCode](this);
+    /*if(event.keyCode === 38 && !this.upPressed ){
       this.upPressed = true;
       this.downPressed = false;
       this.socketService.sendKey('upDown');
-    }else if(event.keyCode === 40 && !this.downPressed){
+    }else */if(event.keyCode === 40 && !this.downPressed){
       this.downPressed = true;
       this.upPressed = false;
       this.socketService.sendKey('downDown');
@@ -161,6 +164,7 @@ export class MainComponent implements OnInit, OnDestroy {
   tPressed : boolean = false;
   fPressed : boolean = false;
   gPressed : boolean = false;
+  
   propFromTop : number;
   propFromLeft : number;
   rotInRad : number;
@@ -241,6 +245,20 @@ export class MainComponent implements OnInit, OnDestroy {
   messagesSubscription : Subscription;
   alarmsSubscription : Subscription;
   gameOverSubscription : Subscription;
+  
+  // This associative array is used to send inputs when your pressing the key
+  keyDownArray : object = {
+    
+    // upPressed
+    keyDown38 : function(): {
+      if (!upPressed) {
+        upPressed = true;
+        downPressed = false;
+        socketService.sendKey('upDown');
+      }
+    }
+  }
+  
 
   constructor(private globalDatasService : GlobalDatasService, private socketService : SocketService, private router : Router) { }
 
