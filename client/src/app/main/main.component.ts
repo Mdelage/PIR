@@ -15,13 +15,14 @@ export class MainComponent implements OnInit, OnDestroy {
   
 
 
-  @HostListener('document:keydown', ['$event']) onKeydown(event : KeyboardEvent){
-    this.keyDownArray["keyDown" + event.keyCode](this);
+  @HostListener('document:keydown', ['$event']) onKeydown(event : KeyboardEvent) {
+    
+    this.keyArray["keyDown" + event.keyCode]();
     /*if(event.keyCode === 38 && !this.upPressed ){
       this.upPressed = true;
       this.downPressed = false;
       this.socketService.sendKey('upDown');
-    }else */if(event.keyCode === 40 && !this.downPressed){
+    }else if(event.keyCode === 40 && !this.downPressed){
       this.downPressed = true;
       this.upPressed = false;
       this.socketService.sendKey('downDown');
@@ -78,13 +79,15 @@ export class MainComponent implements OnInit, OnDestroy {
     }else if(event.keyCode === 71 && !this.gPressed){
       this.gPressed = true;
       this.socketService.sendKey('gDown');
-    }
+    }*/
     
     
   }
 
-  @HostListener('document:keyup', ['$event']) onKeyup(event : KeyboardEvent){
-    if(event.keyCode === 38 && this.upPressed){
+  @HostListener('document:keyup', ['$event']) onKeyup(event : KeyboardEvent) {
+    
+    this.keyArray["keyUp" + event.keyCode]();
+    /*if(event.keyCode === 38 && this.upPressed){
       this.upPressed = false;
       this.socketService.sendKey('upUp');
     }else if(event.keyCode === 40 && this.downPressed){
@@ -130,7 +133,7 @@ export class MainComponent implements OnInit, OnDestroy {
     }else if(event.keyCode === 71 && this.gPressed){
       this.gPressed = false;
       this.socketService.sendKey('gUp');
-    }
+    }*/
   }
 
   @HostListener('window:popstate', ['$event'])  onPopState(event) {
@@ -246,15 +249,282 @@ export class MainComponent implements OnInit, OnDestroy {
   alarmsSubscription : Subscription;
   gameOverSubscription : Subscription;
   
-  // This associative array is used to send inputs when your pressing the key
-  keyDownArray : object = {
+  // This associative array is used to send inputs when you're pressing and releasing keys
+  keyArray : object = {
     
-    // upPressed
-    keyDown38 : function(): {
-      if (!upPressed) {
-        upPressed = true;
-        downPressed = false;
-        socketService.sendKey('upDown');
+    // up pushed
+    keyDown38 : () => {
+      if (!this.upPressed) {
+        this.upPressed = true;
+        this.downPressed = false;
+        this.socketService.sendKey('upDown');
+      }
+    },
+    
+    // up released
+    keyUp38 : () => {
+      if (this.upPressed) {
+        this.upPressed = false;
+        this.socketService.sendKey('upUp');
+      }
+    },
+    
+    // down pushed
+    keyDown40 : () => {
+      if (!this.downPressed) {
+        this.downPressed = true;
+        this.upPressed = false;
+        this.socketService.sendKey('downDown');
+      }
+    },
+    
+    // down released
+    keyUp40 : () => {
+      if (this.downPressed) {
+        this.downPressed = false;
+        this.socketService.sendKey('downUp');
+      }
+    },
+    
+    // left pushed
+    keyDown37 : () => {
+      if (!this.leftPressed) {
+        this.leftPressed = true;
+        this.rightPressed = false;
+        this.socketService.sendKey('leftDown');
+      }
+    },
+    
+    // left released
+    keyUp37 : () => {
+      if (this.leftPressed) {
+        this.leftPressed = false;
+        this.socketService.sendKey('leftUp');
+      }
+    },
+    
+    
+    // right pushed
+    keyDown39 : () => {
+      if (!this.rightPressed) {
+        this.rightPressed = true;
+        this.leftPressed = false;
+        this.socketService.sendKey('rightDown');
+      }
+    },
+    
+    // right released
+    keyUp39 : () => {
+      if (this.rightPressed) {
+        this.rightPressed = false;
+        this.socketService.sendKey('rightUp');
+      }
+    },
+    
+    // a pushed
+    keyDown65 : () => {
+      if (!this.aPressed) {
+        this.aPressed = true;
+        this.socketService.sendKey('a');
+      }
+    },
+    
+    // a released
+    keyUp65 : () => {
+      this.aPressed = false;
+    },
+    
+    // s pushed
+    keyDown83 : () => {
+      if (!this.sPressed) {
+        this.sPressed = true;
+        this.socketService.sendKey('s');
+      }
+    },
+    
+    // s released
+    keyUp83 : () => {
+      this.sPressed = false;
+    },
+    
+    // d pushed
+    keyDown68 : () => {
+      if (!this.dPressed) {
+        this.dPressed = true;
+        this.socketService.sendKey('d');
+      }
+    },
+    
+    // d released
+    keyUp68 : () => {
+      this.dPressed = false;
+    },
+    
+    // e pushed
+    keyDown69 : () => {
+      if (!this.ePressed) {
+        this.ePressed = true;
+        this.socketService.sendKey('e');
+      }
+    },
+    
+    // e released
+    keyUp69 : () => {
+      this.ePressed = false;
+    },
+    
+    // space pushed
+    keyDown32 : () => {
+      if (!this.spacePressed) {
+        this.spacePressed = true;
+        this.socketService.sendKey('space');
+      }
+    },
+    
+    // space released
+    keyUp32 : () => {
+      this.spacePressed = false;
+    },
+    
+    // 1 pushed
+    keyDown87 : () => {
+      if (!this.onePressed) {
+        this.onePressed = true;
+        this.socketService.sendKey('1');
+      }
+    },
+    
+    // 1 released
+    keyUp87 : () => {
+      this.onePressed = false;
+    },
+    
+    // 2 pushed
+    keyDown88 : () => {
+      if (!this.twoPressed) {
+        this.twoPressed = true;
+        this.socketService.sendKey('2');
+      }
+    },
+    
+    // 2 released
+    keyUp88 : () => {
+      this.twoPressed = false;
+    },
+    
+    // 3 pushed
+    keyDown67 : () => {
+      if (!this.threePressed) {
+        this.threePressed = true;
+        this.socketService.sendKey('3');
+      }
+    },
+    
+    // 3 released
+    keyUp67 : () => {
+      this.threePressed = false;
+    },
+    
+    // 4 pushed
+    keyDown86 : () => {
+      if (!this.fourPressed) {
+        this.fourPressed = true;
+        this.socketService.sendKey('4');
+      }
+    },
+    
+    // 4 released
+    keyUp86 : () => {
+      this.fourPressed = false;
+    },
+    
+    // 5 pushed
+    keyDown66 : () => {
+      if (!this.fivePressed) {
+        this.fivePressed = true;
+        this.socketService.sendKey('5');
+      }
+    },
+    
+    // 5 released
+    keyUp66 : () => {
+      this.fivePressed = false;
+    },
+    
+    // 6 pushed
+    keyDown78 : () => {
+      if (!this.sixPressed) {
+        this.sixPressed = true;
+        this.socketService.sendKey('6');
+      }
+    },
+    
+    // 6 released
+    keyUp78 : () => {
+      this.sixPressed = false;
+    },
+    
+    // r pushed
+    keyDown82 : () => {
+      if (!this.rPressed) {
+        this.rPressed = true;
+        this.socketService.sendKey('rDown');
+      }
+    },
+    
+    // r released
+    keyUp82 : () => {
+      if (this.rPressed) {
+        this.rPressed = false;
+        this.socketService.sendKey('rUp');
+      }
+    },
+    
+    // t pushed
+    keyDown84 : () => {
+      if (!this.tPressed) {
+        this.tPressed = true;
+        this.socketService.sendKey('tDown');
+      }
+    },
+    
+    // t released
+    keyUp84 : () => {
+      if (this.tPressed) {
+        this.tPressed = false;
+        this.socketService.sendKey('tUp');
+      }
+    },
+    
+    // f pushed
+    keyDown70 : () => {
+      if (!this.fPressed) {
+        this.fPressed = true;
+        this.socketService.sendKey('fDown');
+      }
+    },
+    
+    // f released
+    keyUp70 : () => {
+      if (this.fPressed) {
+        this.fPressed = false;
+        this.socketService.sendKey('fUp');
+      }
+    },
+    
+    // g pushed
+    keyDown71 : () => {
+      if (!this.gPressed) {
+        this.gPressed = true;
+        this.socketService.sendKey('gDown');
+      }
+    },
+    
+    // g released
+    keyUp71 : () => {
+      if (this.gPressed) {
+        this.gPressed = false;
+        this.socketService.sendKey('gUp');
       }
     }
   }
