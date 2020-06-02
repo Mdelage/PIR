@@ -351,47 +351,47 @@
 		</div>
 		<div class="comms">
 			<button class="commButton1" (click)="sendKey('1')" *ngIf="language=='english'">
-				Please refill water tank
+				{{ messageArray.english1() }}
 				<div class="char"> w </div>
 			</button>
 			<button class="commButton1" (click)="sendKey('1')" *ngIf="language=='french'">
-				Remplis le réservoir
+				{{ messageArray.french1() }}
 				<div class="char"> w </div>
 			</button>
 			<button class="commButton1" (click)="sendKey('2')" *ngIf="language=='english'">
-				I'm going to refuel
+				{{ messageArray.english2() }}
 				<div class="char"> x </div>
 			</button>
 			<button class="commButton1" (click)="sendKey('2')" *ngIf="language=='french'">
-				Je vais recharger
+				{{ messageArray.french2() }}
 				<div class="char"> x </div>
 			</button>
 			<button class="commButton2" (click)="sendKey('3')" *ngIf="language=='english'">
-				Need water
+				{{ messageArray.english3() }}
 				<div class="char"> c </div>
 			</button>
 			<button class="commButton2" (click)="sendKey('3')" *ngIf="language=='french'">
-				J'ai besoin d'eau
+				{{ messageArray.french3() }}
 				<div class="char"> c </div>
 			</button>
 			<button class="commButton2" (click)="sendKey('4')" *ngIf="language=='english'">
-				Need electricity
+				{{ messageArray.english4() }}
 				<div class="char"> v </div>
 			</button>
 			<button class="commButton2" (click)="sendKey('4')" *ngIf="language=='french'">
-				J'ai besoin de batterie
+				{{ messageArray.french4() }}
 				<div class="char"> v </div>
 			</button>
 			<button class="commButton3" (click)="sendKey('5')">
-				Ok
+				OK
 				<div class="char"> b </div>
 			</button>
 			<button class="commButton3" (click)="sendKey('6')" *ngIf="language=='english'">
-				No
+				{{ messageArray.english6() }}
 				<div class="char"> n </div>
 			</button>
 			<button class="commButton3" (click)="sendKey('6')" *ngIf="language=='french'">
-				Non
+				{{ messageArray.french6() }}
 				<div class="char"> n </div>
 			</button>
 		</div>

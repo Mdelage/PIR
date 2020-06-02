@@ -169,47 +169,47 @@
 				</div>
 		<div class="comms" style="height: 40%;">
 			<button class="commButton1" *ngIf="language=='english'">
-				Please refill water tank
+				{{ messageArray.english1() }}
 				<div class="char"> w </div>
 			</button>
 			<button class="commButton1" *ngIf="language=='french'">
-				Remplis le réservoir
+				{{ messageArray.french1() }}
 				<div class="char"> w </div>
 			</button>
 			<button class="commButton1" *ngIf="language=='english'">
-				I'm going to refuel
+				{{ messageArray.english2() }}
 				<div class="char"> x </div>
 			</button>
 			<button class="commButton1" *ngIf="language=='french'">
-				Je vais recharger
+				{{ messageArray.french2() }}
 				<div class="char"> x </div>
 			</button>
 			<button class="commButton2" *ngIf="language=='english'">
-				Need water
+				{{ messageArray.english3() }}
 				<div class="char"> c </div>
 			</button>
 			<button class="commButton2" *ngIf="language=='french'">
-				J'ai besoin d'eau
+				{{ messageArray.french3() }}
 				<div class="char"> c </div>
 			</button>
 			<button class="commButton2" *ngIf="language=='english'">
-				Need electricity
+				{{ messageArray.english4() }}
 				<div class="char"> v </div>
 			</button>
 			<button class="commButton2" *ngIf="language=='french'">
-				J'ai besoin de batterie
+				{{ messageArray.french4() }}
 				<div class="char"> v </div>
 			</button>
 			<button class="commButton3" >
-				Ok
+				OK
 				<div class="char"> b </div>
 			</button>
 			<button class="commButton3" *ngIf="language=='english'">
-				No
+				{{ messageArray.english6() }}
 				<div class="char"> n </div>
 			</button>
 			<button class="commButton3" *ngIf="language=='french'">
-				Non
+				{{ messageArray.french6() }}
 				<div class="char"> n </div>
 			</button>
 		</div>
