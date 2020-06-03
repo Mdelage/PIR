@@ -3,7 +3,7 @@ import { GlobalDatasService } from '../services/global-datas.service';
 import { Router } from '@angular/router';
 import { SocketService } from '../services/socket-service';
 import { Subscription } from 'rxjs';
-import { messages } from '../languages';
+import { messages } from '../../../../languages';
 
 @Component({
   selector: 'app-loading',

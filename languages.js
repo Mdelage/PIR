@@ -1,4 +1,4 @@
-export const messages : object = {
+const messages = {
 
   english1 : () => { return "Go fill the water tank." },
   english2 : () => { return "I'm going to refuel my water." },
@@ -22,3 +22,4 @@ export const messages : object = {
   french9 : () => { return "L'autre joueur veut vous donner de l'énergie." },
   french10 : () => { return "L'autre joueur veut de l'énergie." }
 }
+exports.messages = messages;

@@ -3,7 +3,11 @@ import { GlobalDatasService } from '../services/global-datas.service';
 import { Router } from '@angular/router';
 import { SocketService } from '../services/socket-service';
 import { Subscription } from 'rxjs';
-import { messages } from '../languages';
+import { messages } from '../../../../languages';
+import {
+  gameTime,
+  water
+} from '../../../../settings';
 
 @Component({
   selector: 'app-main',
@@ -62,8 +66,7 @@ export class MainComponent implements OnInit, OnDestroy {
   rotInRad : number;
 
   //control x axis
-  faucetControl : number = 0;
-  faucetControlShow : string = '0';
+  faucetSpeedShow : string = '0';
   direction : number = 0;
   animTime : number = 0;
 
@@ -75,7 +78,7 @@ export class MainComponent implements OnInit, OnDestroy {
 
 
   //leaks
-  leakPlacesNb : number = 9;
+  //leakPlacesNb : number = this.leakPlacesNb;
   leakPlaces : number[] = [];
   noLeakAt : boolean[] = [];
   previousNoLeakAt : boolean[] = [];
@@ -84,27 +87,27 @@ export class MainComponent implements OnInit, OnDestroy {
   leakCounter : number = 0;
 
   //water management
-  xRobinet : number = 42;
-  coeffSpeed : number = 20;
-  piValue : number = 3.1415;
-  decal : number = 4;
-  faucetXAxis : number = 2 * 10 / 40;
-  yRobinet : number ;
-  coeffXRob : number = 10;
-  constXRob : number = 50;
-  waterLevelContainer : number = 50;
+  xRobinet : number = water.xRobinet;
+  coeffSpeed : number = water.coeffSpeed;
+  piValue : number = Math.PI;
+  decal : number = 0; //4
+  faucetXAxis : number = water.faucetXAxis;
+  yRobinet : number = water.yRobinet;
+  coeffXRob : number = water.coeffXRob;
+  constXRob : number = water.constXRob;
+  waterLevelContainer : number = water.waterLevelContainer;
 
   otherPropFromTop : number;
   otherPropFromLeft : number;
   otherRotInRad : number;
 
   nbFighted : number = 0;
-  remainingTime : number = 600;
+  remainingTime : number = gameTime;
   temperature : number = 0;
   hotScreen : number = 0;
   alarmId : number = 0;
   
-  role : string ;
+  role : string;
   trees : any;
   zones : any = { batteryZone : { x : 0, y : 0},
                   waterZone : { x : 0, y : 0}};
@@ -500,7 +503,7 @@ export class MainComponent implements OnInit, OnDestroy {
       this.noLeakAt = water.noLeakAt;
       this.leaksReverse = water.leaksReverse;
       this.leftValues = water.leftValues;
-      this.faucetControl = water.faucetControl;
+      this.faucetSpeedShow = water.faucetSpeedShow;
     
       this.remainingTime = data.remainingTime;
       this.batteryLevel = data.batteryLevel;

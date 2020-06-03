@@ -1,5 +1,8 @@
 "use strict";
 
+const settings = require("../settings.js");
+const messages = require("../languages.js").messages;
+
 var express = require("express");
 var app = express();
 var fs = require('fs');
@@ -14,8 +17,8 @@ var io = require('socket.io')(server);
 var date;
 var wstream;
 var wstreamdialogues;
-var gameTime = 300;
-var waitingTime = 15;
+var gameTime = settings.gameTime;
+var waitingTime = settings.waitingTime;
 var remainingTime = 0;
 var nbPlayers = 0;
 var nbReadyPlayers = 0;
@@ -50,7 +53,7 @@ var player2;
 var playerPos;
 
 // Represents the water reservoir and faucet
-var water;
+var water = settings.water;
 
 var treesLocations;
 var zonesLocations;
@@ -58,8 +61,8 @@ var zonesLocations;
 // Boolean array telling if a given tree is on fire
 var firesStatesOfTrees;
 
-var timeStep = 0.02;
-var leakPlacesNb = 9;
+var timeStep = settings.timeStep;
+var leakPlacesNb = settings.leakPlacesNb;
 var collidingThreshold = 3;
 var extinguishThreshold = 10;
 var angleThreshold = 0.9;
@@ -80,7 +83,7 @@ var autonomousCapThreshold = 0.03;
 var autonomousScalarProdThreshold = 0.5;
 var probaAlarms = 0.7;
 
-var temperatureMax = 1000; // Default value: 1000
+var temperatureMax = settings.temperatureMax; // Default value: 1000
 var batteryMax = 1000; // Default value: 1000
 
 //Intervals
@@ -109,7 +112,7 @@ var pAlarm;
 /*             END GAME DATA             */
 
 
-function initWater() {
+function initWater(water) {
 
   water.leakPlaces  = [];
   water.noLeakAt  = [];
@@ -121,13 +124,6 @@ function initWater() {
   // Corresponds to the speed of the faucet
   water.faucetSpeed = 0;
   water.faucetSpeedShow = '0';
-  // The maximum speed of the faucet
-  water.faucetMaxSpeed = 3;
-  // The acceleration of the faucet when pressing s or d
-  water.faucetAcceleration = 0.5;
-  // The natural decceleration of the faucet when idle
-  water.faucetDecceleration = 0.1;
-  
   // Corresponds to the direction the faucet is going toward
   water.direction = 0;
   
@@ -138,14 +134,6 @@ function initWater() {
 
   water.wrenchMode = false;
 
-  water.xRobinet  = 42;
-  water.coeffSpeed  = 20;
-  water.faucetXAxis = 2 * 10 / 40;
-  water.yRobinet = 0;
-  water.coeffXRob = 10;
-  water.constXRob  = 50;
-  water.waterLevelContainer = 50;
-
   var i;
   for (i = 0; i < leakPlacesNb; i += 1) {
     water.leakPlaces.push(water.leakCounter);
@@ -155,32 +143,20 @@ function initWater() {
     water.leftValues.push(0);
     water.leaksReverse.push(0);
   }
+  
+  return water;
 }
 
-function initSpeeder(player) {
-	player.pos = [75, 60, Math.PI];
-	player.maxWaterLevel = 50;
-	player.waterLevel = 30;
-	player.maxBatteryLevel = 50;
-	player.transSpeed = 20;
-	player.rotSpeed = 1;
-	player.rotDirection = 0;
-	player.direction = 0;
-	player.role = 'speeder';
-	player.personnalScore = 0;
+var initSpeeder = (player) => { 
+  for (const property in settings.speeder) {
+    player[property] = settings.speeder[property];
+  }
 }
 
-function initTanker(player) {
-	player.pos = [75, 40, Math.PI];
-	player.maxWaterLevel = 100;
-	player.waterLevel = 50;
-	player.maxBatteryLevel = 100;
-	player.transSpeed = 15;
-	player.rotSpeed = 0.7;
-	player.rotDirection = 0;
-	player.direction = 0;
-	player.role = 'tanker';
-	player.personnalScore = 0;
+var initTanker = (player) => {
+  for (const property in settings.tanker) {
+    player[property] = settings.tanker[property];
+  }
 }
 
 function processPosition(player) {
@@ -986,22 +962,22 @@ const inputArray = {
 
 
   //When the player presses 1
-  key1 : (playerData, token, socket) => messageToSent(playerData, 1, token, "Please refill water tank"),
+  key1 : (playerData, token, socket) => messageToSent(playerData, 1, token, messages.english1()),
 
   //When the player presses 2
-  key2 : (playerData, token, socket) => messageToSent(playerData, 2, token, "I'm going to refuel"),
+  key2 : (playerData, token, socket) => messageToSent(playerData, 2, token, messages.english2()),
 
   //When the player presses 3
-  key3 : (playerData, token, socket) => messageToSent(playerData, 3, token, "Need water"),
+  key3 : (playerData, token, socket) => messageToSent(playerData, 3, token, messages.english3()),
 
   //When the player presses 4
-  key4 : (playerData, token, socket) => messageToSent(playerData, 4, token, "Need electricity"),
+  key4 : (playerData, token, socket) => messageToSent(playerData, 4, token, messages.english4()),
 
   //When the player presses 5
-  key5 : (playerData, token, socket) => messageToSent(playerData, 5, token, "Ok"),
+  key5 : (playerData, token, socket) => messageToSent(playerData, 5, token, messages.english5()),
 
   //When the player presses 6
-  key6 : (playerData, token, socket) => messageToSent(playerData, 6, token, "No"),
+  key6 : (playerData, token, socket) => messageToSent(playerData, 6, token, messages.english6()),
 
 
   //When the player presses r
@@ -1035,6 +1011,8 @@ function initGame(){
   var player1Role;
   var player2Role;
   var dirname;
+  
+  water = initWater(water);
 
   socketStates = setInterval( () => {
       if(!socketNb1.connected || !socketNb2.connected){
@@ -1049,7 +1027,6 @@ function initGame(){
   player2DatasToSend = {};
   player1Datas.socket = socketNb1;
   player2Datas.socket = socketNb2;
-  water = {};
 
   p = Math.random();
 
@@ -1077,7 +1054,7 @@ function initGame(){
   wstream.write('# remaining_time, trees_state, global_score, ground_tank_water_level, leaks, personnal_score1, autonomous1, alarms1, robot1_x, robot1_y, robot1_theta, robot1_battery, robot1_temperature, robot1_waterlevel, robot1_shortkeys, robot1_clicks, personnal_score2, autonomous2, alarms2, robot2_x, robot2_y, robot2_theta, robot2_battery, robot2_temperature, robot2_waterlevel, robot2_shortkeys, robot2_clicks  \n');
   wstreamdialogues = fs.createWriteStream(dirname + '/dialogues.txt');
   isFinished = false;
-  remainingTime = 600;
+  remainingTime = gameTime;
 
   player1DatasToSend.pos = player1Datas.pos;
   player1DatasToSend.other = player2Datas.pos;
@@ -1104,10 +1081,6 @@ function initGame(){
   player2Datas.stringWriteClicks = "'";
   player1Datas.stringWriteUsedKeys = "'";
   player2Datas.stringWriteUsedKeys = "'";
-
-
-
-  initWater();
 
   var chaine = fs.readFileSync('trees.json', 'UTF-8');
   treesLocations = JSON.parse(chaine);
@@ -1164,6 +1137,7 @@ function startGame(){
 
   waterManagementInterval = setInterval(() => {
     var x;
+    var y = Math.PI;
     var sign = "";
     
     // Rounds to the first digit
@@ -1174,18 +1148,19 @@ function startGame(){
     When it's positive, we substract the decceleration. */
     water.faucetSpeed -= Math.sign(water.faucetSpeed) * water.faucetDecceleration;
     
-    x = water.faucetSpeed;
+    // Rounds again
+    x = roundNumber(water.faucetSpeed, 1);
   
     if (x > 0) { sign = "+ "} else if (x < 0) { sign = "- " }; 
     water.faucetSpeedShow = sign + Math.abs(x);
 
-    water.xRobinet += water.coeffSpeed * (Math.PI / 80) * Math.sin(Math.PI * water.xRobinet / 40 - Math.PI) + x;
+    water.xRobinet += water.coeffSpeed * (y / 80) * Math.sin(y * water.xRobinet / 40 - y) + x;
     //Keeps xRobinet between 0 and 80
     water.xRobinet = Math.min(Math.max(water.xRobinet, 0), 80);
 
     //water.xRobinet += water.decal;
     water.faucetXAxis = (water.xRobinet - 40) * 10 / 40;
-    water.yRobinet = water.coeffXRob * Math.cos(water.faucetXAxis* Math.PI *2 / 20) + water.constXRob;
+    water.yRobinet = water.coeffXRob * Math.cos(water.faucetXAxis* y *2 / 20) + water.constXRob;
     
   }, 200);
 

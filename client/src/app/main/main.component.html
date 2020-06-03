@@ -137,9 +137,10 @@
 
 					<div class="wmbuttons">
 						<div class="speed">  
-							<div class="wheelsmall2"> </div>
-							<div *ngIf="language=='english'"> speed: {{faucetControl}} </div>
-							<div *ngIf="language=='french'"> vitesse: {{faucetControl}} </div>
+						  <div class="wheelsmall2"> </div>
+                          <div class=nameSpeed *ngIf="language=='english'"> Speed </div>
+                          <div class=nameSpeed *ngIf="language=='french'"> Vitesse </div>
+                          <div class=valueSpeed> {{faucetSpeedShow}} </div>
 						</div>
 						<div class="buttonWheel">
 							<div class="buttonChar">
