@@ -5,11 +5,11 @@
         <div class="gameover" *ngIf="gameOverCause==1 && language=='french'"> C'est terminé ! </div>
 		<div class="textthx" *ngIf="gameOverCause==1 && language=='english'"> Mission completed, CONGRATULATION! </div>
 		<div class="textthx" *ngIf="gameOverCause==1 && language=='french'"> Mission réussie, BRAVO! </div>
-		<div class="gameover" *ngIf="gameOverCause==2 && language=='english'"> THE OTHER PLAYER DISCONNECTED </div>
+		<div class="gameover" *ngIf="gameOverCause==2 && language=='english'"> The other player disconnected </div>
 		<div class="gameover" *ngIf="gameOverCause==2 && language=='french'"> L'autre joueur s'est déconnecté </div>
 		<div class="whyover" *ngIf="gameOverCause==3"> 
 			<i class="fa fa-exclamation-triangle" aria-hidden="true"></i> 
-			<div class="textcause" *ngIf="language=='english'"> Batteries empty </div> 
+			<div class="textcause" *ngIf="language=='english'"> Energy empty </div> 
 			<div class="textcause" *ngIf="language=='french'"> Batteries vides </div> 
 			<i class="fa fa-battery-empty" aria-hidden="true"></i> 
 		</div>
@@ -28,14 +28,14 @@
 		<div class="numextfires"> 
 			
 			<i class="fa fa-user" aria-hidden="true"></i> 
-			<div class="firetext" *ngIf="language=='english'">You personnaly extinguished {{personnalScore}} fires </div> 
+			<div class="firetext" *ngIf="language=='english'">You personally extinguished {{personnalScore}} fires </div> 
 			<div class="firetext" *ngIf="language=='french'">Vous avez éteint {{personnalScore}} feux </div> 
 			<div class="fireicon"> </div> 	
 		</div>
 		<div class="newbestscore" *ngIf="newBestScore"> 
 			<span *ngIf="language=='english'"> NEW BEST SCORE! Good job!  </span>
-			<span *ngIf="language=='french'"> NoOUVEAU MEILLEUR SCORE! Bien joué!  </span>
-			<span style="color: #05BDFF">{{pseudo1}} & {{pseudo2}}</span> <span>!</span>
+			<span *ngIf="language=='french'"> NOUVEAU MEILLEUR SCORE! Bien joué!  </span>
+			<span style="color: #05BDFF">{{pseudo1}} &amp; {{pseudo2}}</span> <span>!</span>
 		</div>
 		<div [routerLink]="['/welcome']" class="gohome"> 
 			<i class="fa fa-reply" aria-hidden="true"></i> 
@@ -68,7 +68,7 @@
 			<div class="maincontainermission">
 
 				<div class="role">
-					Role : {{role}}
+					{{role}}
 				</div>
 				<div class="infonoff">	
 					<div class="missioninfo">
@@ -137,11 +137,11 @@
 
 					<div class="wmbuttons">
 						<div class="speed">  
-						  <div class="wheelsmall2"> </div>
-                          <div class=nameSpeed *ngIf="language=='english'"> Speed </div>
-                          <div class=nameSpeed *ngIf="language=='french'"> Vitesse </div>
-                          <div class=valueSpeed> {{faucetSpeedShow}} </div>
+						  <!--><div class="wheelsmall2"></div></-->
+                          <div class=nameSpeed *ngIf="language=='english'">Speed</div>
+                          <div class=nameSpeed *ngIf="language=='french'">Vitesse</div>
 						</div>
+                        <div class=valueSpeed> {{faucetSpeedShow}} </div>
 						<div class="buttonWheel">
 							<div class="buttonChar">
 								<div class="mainbuttonL" [ngClass]="{cursorPointer: !wrenchMode}" (click)="faucetCtrlFctMinus()"> 

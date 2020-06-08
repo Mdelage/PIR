@@ -3,6 +3,7 @@ import { HotkeysService, Hotkey } from 'angular2-hotkeys';
 import { Subscription } from 'rxjs/Subscription';
 import { GlobalDatasService } from '../services/global-datas.service';
 import { interval } from 'rxjs/observable/interval';
+import { messages } from '../../../../languages';
 
 @Component({
   selector: 'app-train',
