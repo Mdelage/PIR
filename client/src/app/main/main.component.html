@@ -47,17 +47,17 @@
 
 	<div [ngClass]="{overlayOpen: alarmOverlayOpen && !overlayOpen}" class="alarmOverlay">
 		<i class="fa fa-exclamation-triangle" aria-hidden="true"></i> 
-		<span class="textAlarm" *ngIf="alarmId==1 && language=='english'"> Low water (less than 2 shots)!! </span>
-		<span class="textAlarm" *ngIf="alarmId==1 && language=='french'"> Peu d'eau (moins de 2 tirs)!! </span>
-		<span class="textAlarm" *ngIf="alarmId==2 && language=='english'"> Your battery is low!! </span>
-		<span class="textAlarm" *ngIf="alarmId==2 && language=='french'"> Votre batterie est faible!! </span>
-		<span class="textAlarm" *ngIf="alarmId==3 && language=='english'"> The other player has no battery anymore!! </span>
-		<span class="textAlarm" *ngIf="alarmId==3 && language=='french'"> L'autre joueur n'a plus de batterie!! </span>
+		<span class="textAlarm" *ngIf="alarmId==1 && language=='english'"> Low water (less than 2 shots left)!! </span>
+		<span class="textAlarm" *ngIf="alarmId==1 && language=='french'"> Peu d'eau (moins de 2 tirs restants) !! </span>
+		<span class="textAlarm" *ngIf="alarmId==2 && language=='english'"> Your energy level is low!! </span>
+		<span class="textAlarm" *ngIf="alarmId==2 && language=='french'"> Votre batterie est faible !! </span>
+		<span class="textAlarm" *ngIf="alarmId==3 && language=='english'"> The other player ran out of energy!! </span>
+		<span class="textAlarm" *ngIf="alarmId==3 && language=='french'"> L'autre joueur n'a plus de batterie !! </span>
 		<span class="textAlarm" *ngIf="alarmId==4 && language=='english'"> Your temperature is high!! </span>
 		<span class="textAlarm" *ngIf="alarmId==4 && language=='french'"> Votre température est élevée!! </span>
-		<span class="textAlarm" *ngIf="alarmId==5 && language=='english'"> Only 30s left!! </span>
-		<span class="textAlarm" *ngIf="alarmId==5 && language=='french'"> Plus que 30s!! </span>
-		<span class="textAlarm" *ngIf="alarmId==6 && language=='english'"> Autonomous mode activated !!</span>
+		<span class="textAlarm" *ngIf="alarmId==5 && language=='english'"> 30s left!! </span>
+		<span class="textAlarm" *ngIf="alarmId==5 && language=='french'"> Plus que 30s !! </span>
+		<span class="textAlarm" *ngIf="alarmId==6 && language=='english'"> Autonomous mode activated!!</span>
 		<span class="textAlarm" *ngIf="alarmId==6 && language=='french'"> Mode autonome activé !! </span>
 		<div class="alarmButton" (click)="removeAlarm()" *ngIf="language=='english'"> I got it </div>	
 		<div class="alarmButton" (click)="removeAlarm()" *ngIf="language=='french'"> J'ai compris </div>	
