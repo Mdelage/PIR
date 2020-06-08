@@ -6,12 +6,12 @@
 		<span *ngIf="language=='french'"> EN ATTENTE D'UN AUTRE JOUEUR <span *ngIf="dot>0">.</span><span *ngIf="dot>1">.</span><span *ngIf="dot>2">.</span></span>
 	</div>
     <div class="loading" *ngIf="anotherPlayer">
-		<span style="color: #05BDFF" *ngIf="language=='english'"> ANOTHER PLAYER HAS BEEN FOUND. <br>THE GAME WILL START IN {{waitingTime || 0}}S! </span>
-		<span style="color: #05BDFF" *ngIf="language=='french'"> UN AUTRE JOUEUR A ETE TROUVE. <br>LE JEU COMMENCERA DANS  {{waitingTime || 0}}S! </span>
-		<div class="mainButton" *ngIf="!isReady && language=='english'" (click)="ready()">Click this button to play within {{waitingTime}}S.</div>
-		<div class="mainButton" *ngIf="!isReady && language=='french'" (click)="ready()">Clickez sur ce boutton pour jouer dans {{waitingTime}}S.</div>
-		<div class="loapart" *ngIf="isReady && language=='english'">You are ready!</div>
-		<div class="loapart" *ngIf="isReady && language=='french'">Vous êtes prêt!</div>
+		<span style="color: #05BDFF; text-align: center;" *ngIf="language=='english'"> ANOTHER PLAYER HAS BEEN FOUND. <br>THE GAME WILL START IN {{waitingTime || 0}}S! </span>
+		<span style="color: #05BDFF; text-align: center;" *ngIf="language=='french'"> UN AUTRE JOUEUR A ÉTÉ TROUVÉ. <br>LE JEU COMMENCERA DANS  {{waitingTime || 0}}S ! </span>
+		<div class="mainButton" *ngIf="!isReady && language=='english'" (click)="ready()">Click this button to play within {{waitingTime}}S</div>
+		<div class="mainButton" *ngIf="!isReady && language=='french'" (click)="ready()">Clickez sur ce boutton pour jouer dans {{waitingTime}}S</div>
+		<div class="loapart" *ngIf="isReady && language=='english'">You are ready! Waiting for the other player...</div>
+		<div class="loapart" *ngIf="isReady && language=='french'">Vous êtes prêt ! En attente de l'autre joueur...</div>
 		<!-- <span *ngIf="language=='english'"> The game is ready! </span>
 		<span *ngIf="language=='french'"> Le jeu est prêt ! </span> -->
 	</div>
@@ -20,14 +20,14 @@
 		<span *ngIf="language=='french'"> TROP TARD, désolé ! </span>
 	</div> -->
 	<!-- <span class="advice"> Press F11 for a better experience </span> -->
-	<span class="advice" *ngIf="language=='english'"> Please do not refresh web pages from now! </span>
+	<span class="advice" *ngIf="language=='english'"> Please do not refresh the web pages from now on. </span>
 	<span class="advice" *ngIf="language=='french'"> S'il vous plaît ne rafraîchissez pas les pages webs à partir de maintenant. </span>
-    <span class="advice" *ngIf="language=='english'"> Enter your pseudo if you want to display it on the score page: <input type="text" maxlength="10" [(ngModel)]="pseudo" /> </span>
+    <span class="advice" *ngIf="language=='english'"> Enter your nickname if you want to display it on the score board: <input type="text" maxlength="10" [(ngModel)]="pseudo" /> </span>
     <span class="advice" *ngIf="language=='french'"> Ecrivez votre pseudo si vous souhaitez le voir apparaître dans la page de scores: <input type="text" maxlength="10" [(ngModel)]="pseudo" /> </span>
 	<div class="reminders">
 		<div class="watermanagementLoading">
-			<div *ngIf="language=='english'"> <i class="fa fa-tint" aria-hidden="true"></i> Ground tank water management: </div>
-			<div *ngIf="language=='french'"> <i class="fa fa-tint" aria-hidden="true"></i> Gestion de l'eau du réservoir principal: </div>
+			<div *ngIf="language=='english'"> <i class="fa fa-tint" aria-hidden="true"></i> Water tank: </div>
+			<div *ngIf="language=='french'"> <i class="fa fa-tint" aria-hidden="true"></i> Réservoir d'eau : </div>
 			<div class="explainkeys">
 				<div class="mainbuttonL">
 					<i class="fa fa-undo" aria-hidden="true"></i>
@@ -38,8 +38,8 @@
 				<div class="anykey">
 					<div style="color: black"> s </div>					
 				</div>
-				<div *ngIf="language=='english'" class="result"> increase wheel's speed <br /> to the left</div>
-				<div *ngIf="language=='french'" class="result"> augmente la vitesse de la roue <br /> vers la gauche</div>
+				<div *ngIf="language=='english'" class="result"> move the wheel <br /> to the left</div>
+				<div *ngIf="language=='french'" class="result"> déplacer la roue <br /> vers la gauche</div>
 			</div>
 			<div class="explainkeys">	
 				<div class="mainbuttonR"> 
@@ -51,8 +51,8 @@
 				<div class="anykey">
 					<div style="color: black"> d </div>					
 				</div>
-				<div *ngIf="language=='english'" class="result"> increase wheel's speed <br /> to the right </div>
-				<div *ngIf="language=='french'" class="result"> augmente la vitesse de la roue <br /> vers la droite </div>
+				<div *ngIf="language=='english'" class="result"> move the wheel <br /> to the right </div>
+				<div *ngIf="language=='french'" class="result"> déplacer la roue <br /> vers la droite </div>
 			</div>
 			<div class="explainkeys">
 				<div class="pushButton">
@@ -64,8 +64,8 @@
 				<div class="anykey">
 					<div style="color: black"> e </div>					
 				</div>
-				<div *ngIf="language=='english'" class="result"> tap opens few seconds </div>
-				<div *ngIf="language=='french'" class="result"> le robinet s'ouvre quelques secondes </div>
+				<div *ngIf="language=='english'" class="result"> open the tap </div>
+				<div *ngIf="language=='french'" class="result"> ouvrir le robinet </div>
 			</div>
 			<div class="explainkeys">
 				<div class="wrenchButton">
@@ -76,12 +76,12 @@
 				<div class="anykey">
 					<div style="color: black"> a </div>					
 				</div>
-				<div *ngIf="language=='english'" class="result"> allows to fix leaks </div>
-				<div *ngIf="language=='french'" class="result"> permet de réparer les fuites </div>
+				<div *ngIf="language=='english'" class="result"> fix leaks </div>
+				<div *ngIf="language=='french'" class="result"> réparer les fuites </div>
 			</div>				
 		</div>
 		<div class="robotControlLoading">
-			<div *ngIf="language=='english'"> <i class="fa fa-gamepad" aria-hidden="true"></i> Control of the robot: </div>
+			<div *ngIf="language=='english'"> <i class="fa fa-gamepad" aria-hidden="true"></i> Robot control: </div>
 			<div *ngIf="language=='french'"> <i class="fa fa-gamepad" aria-hidden="true"></i> Contrôle du robot : </div>
 			<div class="explainkeys">
 				<div class="spaceKey">
@@ -133,6 +133,8 @@
 			</div>-->
 		</div>
 		<div class="cooperationBlock">
+          <div *ngIf="language=='english'"> <i class="fa fa-handshake-o" aria-hidden="true"></i> Cooperation: </div>
+          <div *ngIf="language=='french'"> <i class="fa fa-handshake-o" aria-hidden="true"></i> Coopération : </div>
 				<div class="coopActionsPlain" style="background-color: #05BDFF;height: 40%;">
 				<div class="exchangeRessources">
 					<div class="buttonletterChar">
