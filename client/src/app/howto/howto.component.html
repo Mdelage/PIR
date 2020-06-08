@@ -18,7 +18,7 @@
 			<i class="fa fa-tree" aria-hidden="true"></i>
 		</div>
 		<div class="rightpartrow" *ngIf="language=='english'">
-			<span>  with few trees  </span>
+			<span>  with some trees  </span>
 		</div>
 		<div class="rightpartrow" *ngIf="language=='french'">
 			<span>  avec quelques arbres  </span>
@@ -29,10 +29,10 @@
 			<i class="fa fa-fire" aria-hidden="true"></i>
 		</div>
 		<div class="rightpartrow" *ngIf="language=='english'">
-			<span>  which have a weird tendency to self-ignite for some unknown reason... </span>
+			<span>  which have a weird tendency to self-ignite... </span>
 		</div>
 		<div class="rightpartrow" *ngIf="language=='french'">
-			<span>  ayant une facheuse tendance à prendre feu pour une raison inconnue... </span>
+			<span>  ayant une fâcheuse tendance à prendre feu... </span>
 		</div>
 	</div>
 	<div class="rowhowto">
@@ -40,10 +40,10 @@
 			<i class="fa fa-location-arrow" aria-hidden="true"></i>
 		</div>
 		<div class="rightpartrow" *ngIf="language=='english'">
-			<span> Through your graphical interface, you get the positions of the robots, </span>
+			<span> With your graphical interface, learn the robots whereabouts. </span>
 		</div>
 		<div class="rightpartrow" *ngIf="language=='french'">
-			<span> Grâce à l'interface graphique, vous observez les positions des robots, </span>
+			<span> Grâce à l'interface graphique, observez les positions des robots. </span>
 		</div>
 	</div>
 	<div class="rowhowto">
@@ -51,10 +51,10 @@
 			<i class="fa fa-battery-three-quarters" aria-hidden="true"></i>
 		</div>
 		<div class="rightpartrow" *ngIf="language=='english'">
-			<span> The battery charge level of each robot decreases with time: when a robot is on the red square, its battery recharges. </span> 
+			<span> The energy level of each robot decreases with time. Place your robot on the energy station (<span style="color: red;">red square</span>) to recharge it. </span>
 		</div>
 		<div class="rightpartrow" *ngIf="language=='french'">
-			<span> Le niveau de baterie de chaque robot diminue avec le temps : lorsqu'un robot est sur le carré rouge, sa batterie se recharge. </span> 
+			<span> Le niveau de batterie de chaque robot diminue avec le temps. Placez votre robot sur la station de rechargement (<span style="color: red;">carré rouge</span>) pour le recharger. </span> 
 		</div>
 	</div>
 	<div class="rowhowto">
@@ -62,10 +62,10 @@
 			<i class="fa fa-tint" aria-hidden="true"></i>
 		</div>
 		<div class="rightpartrow" *ngIf="language=='english'">
-			<span> The volume of water contained by a robot is not unlimited: to recharge its water tank, the robot has to be placed on the blue square and the ground tank has to be full enough. For that, you have to fill the ground tank using the buttons on the left-side of the interface. </span>
+          <span> Your robot may run out of water. To refuel it, place it on the ground water tank station (<span style="color: blue;">blue square</span>). The water tank is not infinite. You or your teammate will have to fill it and fix its leaks. </span>
 		</div>
 		<div class="rightpartrow" *ngIf="language=='french'">
-			<span> Le volume d'eau contenu par un robot n'est pas illimité : pour le recharger en eau, le robot doit être placé sur le carré bleu et le réservoir principal doit être assez rempli. Pour cela, vous devez remplir le réservoir principal en utilisant les boutons à gauche de l'interface. </span>
+			<span> Votre robot pourrait manquer d'eau. Pour en récupérer, placez-le sur la station du réservoir d'eau (<span style="color: blue;">carré bleu</span>). Le réservoir n'est pas infini. Vous ou votre coéquipier devront le remplir et réparer les fuites. </span>
 		</div>
 	</div>
 	<span class="titlehowto" *ngIf="language=='english'"> Goal: </span>
@@ -75,10 +75,32 @@
 			<i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
 		</div>
 		<div class="rightpartrow" *ngIf="language=='english'">
-			<span> With the help of this robot and of your teammate, your mission is to fight as much fires as you can. </span>
+			<span> With the help of your robot and your teammate's, your mission is to extinguish as many fires as possible within the time limit. </span>
 		</div>
 		<div class="rightpartrow" *ngIf="language=='french'">
-			<span> Avec l'aide de ce robot et de votre coéquipier, votre mission est d'éteindre le plus de feux possible. </span>
+			<span> Avec l'aide de ce robot et celui de votre coéquipier, votre mission est d'éteindre le plus de feux possible pendant la limite de temps. </span>
+		</div>
+	</div>
+    <div class="rowhowto">
+		<div class="leftpartrow">
+			<i class="fa fa-check" aria-hidden="true"></i>
+		</div>
+		<div class="rightpartrow" *ngIf="language=='english'">
+			<span> Each robot has its own advantages. The <span style="color: yellow;">tanker</span> can carry more ressources, but the <span style="color: yellow;">speeder</span> is faster. </span>
+		</div>
+		<div class="rightpartrow" *ngIf="language=='french'">
+			<span> Chaque robot a ses propres avantages. Le <span style="color: yellow;">tanker</span> peut porter plus de ressources, mais le <span style="color: yellow;">speeder</span> est plus rapide. </span>
+		</div>
+	</div>
+    <div class="rowhowto">
+		<div class="leftpartrow">
+			<i class="fa fa-exchange" aria-hidden="true"></i>
+		</div>
+		<div class="rightpartrow" *ngIf="language=='english'">
+		<span> You can communicate with you teammate and exchange water and energy. Use each robot to its fullest!</span>
+		</div>
+		<div class="rightpartrow" *ngIf="language=='french'">
+		<span> Vous pouvez communiquer avec votre partenaire et échanger de l'eau et de l'électricité. Utilisez chaque robot le mieux possible ! </span>
 		</div>
 	</div>
 	<div class="rowhowto">
@@ -86,10 +108,10 @@
 			<i class="fa fa-play" aria-hidden="true"></i>
 		</div>
 		<div class="rightpartrow" *ngIf="language=='english'">
-		<span> The robot can become autonomous at any time. </span>
+		<span> The robot can become autonomous at any time. Take advantage of that to refuel the water tank or communicate with your teammate. </span>
 		</div>
 		<div class="rightpartrow" *ngIf="language=='french'">
-		<span> Le robot peut devenir autonome à n'importe quel moment. </span>
+		<span> Le robot peut devenir autonome à n'importe quel moment. Profitez-en pour remplir le réservoir d'eau ou communiquer avec votre coéquipier. </span>
 		</div>
 	</div>
 
@@ -98,23 +120,25 @@
 			<i class="fa fa-thermometer-three-quarters" aria-hidden="true"></i>
 		</div>
 		<div class="rightpartrow" *ngIf="language=='english'">
-		<span> Pay attention to the robot's temperature when it is too close of flames!  </span>
+		<span> Pay attention to your robot temperature when it is too close to flames!  </span>
 		</div>
 		<div class="rightpartrow" *ngIf="language=='french'">
-		<span> Faites attention à la température du robot lorsqu'il est trop proche des flammes !</span>
+		<span> Faites attention à la température de votre robot lorsqu'il est trop proche des flammes !</span>
 		</div>
 	</div>
-	<div class="rowhowto">
+  
+    <div class="rowhowto">
 		<div class="leftpartrow">
-			<i class="fa fa-exchange" aria-hidden="true"></i>
+			<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
 		</div>
 		<div class="rightpartrow" *ngIf="language=='english'">
-		<span> You can communicate with you teammate and exchange water and electricity through buttons on the right-side. One of the robot (the tanker) is slower than the other (the speeder) but can carry more ressources. </span>
+		<span> The game ends after the time limit, if both robots run out of energy, or if your temperature is too high. </span>
 		</div>
 		<div class="rightpartrow" *ngIf="language=='french'">
-		<span> Vous pouvez communiquer avec votre partenaire et échanger de l'eau et de l'électricité via des boutons sur la droite. L'un des robots (le tanker) est plus lent que l'autre (le speeder) mais peut transporter plus de ressources. </span>
+		<span> Le jeu se termine après la limite de temps, si les deux robots n'ont plus de batterie, ou si votre température est trop haute.</span>
 		</div>
 	</div>
+	
 	<div [routerLink]="['/welcome']" class="gohomeTrain" *ngIf="language=='english'"> <i class="fa fa-reply" aria-hidden="true"></i> back to main menu </div>
 	<div [routerLink]="['/welcome']" class="gohomeTrain" *ngIf="language=='french'"> <i class="fa fa-reply" aria-hidden="true"></i> retour au menu principal</div>
 </div>
