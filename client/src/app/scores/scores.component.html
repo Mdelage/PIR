@@ -15,8 +15,8 @@
 				</div>
 			</div>
 			<div class="scoresNames">
-				<span *ngIf="language=='english'"> FIRST PLAYER </span>
-				<span *ngIf="language=='french'"> JOUEUR 1 </span>
+				<span *ngIf="language=='english'"> BEST PLAYER </span>
+				<span *ngIf="language=='french'"> MEILLEUR JOUEUR </span>
 				<div *ngFor="let score of pagesArray[pageKey]; let k = index">
 					<i class="fa fa-fire-extinguisher" aria-hidden="true"></i> {{score.pseudo1}}
 				</div>
@@ -35,7 +35,7 @@
 				</div>
 			</div>
 			<div class="scoresValues">
-				<span> SCORE 2 </span>
+				<span> SCORE </span>
 				<div *ngFor="let score of pagesArray[pageKey]">
 					{{score.score2}}
 				</div>
