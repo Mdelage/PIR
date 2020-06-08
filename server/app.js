@@ -1138,15 +1138,15 @@ function startGame(){
   waterManagementInterval = setInterval(() => {
     var x;
     var y = Math.PI;
-    var sign = "";
+    var sign = "  ";
     
     // Rounds to the first digit
     water.faucetSpeed = roundNumber(water.faucetSpeed, 1); 
     
     // The speed which will be displayed
     x = water.faucetSpeed;
-    if (x > 0) { sign = "+ "} else if (x < 0) { sign = "- " } else { sign = "  " }; 
-    water.faucetSpeedShow = sign + Math.abs(x);
+    if (x > 0) { sign = "+ "} else if (x < 0) { sign = "- " }; 
+    water.faucetSpeedShow = sign + Math.abs(x).toFixed(1);
     
     /* Decreasing of the speed.
     When it's negative, we add the decceleration.
