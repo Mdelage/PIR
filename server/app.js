@@ -1143,18 +1143,17 @@ function startGame(){
     // Rounds to the first digit
     water.faucetSpeed = roundNumber(water.faucetSpeed, 1); 
     
+    // The speed which will be displayed
+    x = water.faucetSpeed;
+    if (x > 0) { sign = "+ "} else if (x < 0) { sign = "- " } else { sign = "  " }; 
+    water.faucetSpeedShow = sign + Math.abs(x);
+    
     /* Decreasing of the speed.
     When it's negative, we add the decceleration.
     When it's positive, we substract the decceleration. */
     water.faucetSpeed -= Math.sign(water.faucetSpeed) * water.faucetDecceleration;
-    
-    // Rounds again
-    x = roundNumber(water.faucetSpeed, 1);
-  
-    if (x > 0) { sign = "+ "} else if (x < 0) { sign = "- " }; 
-    water.faucetSpeedShow = sign + Math.abs(x);
 
-    water.xRobinet += water.coeffSpeed * (y / 80) * Math.sin(y * water.xRobinet / 40 - y) + x;
+    water.xRobinet += water.coeffSpeed * (y / 80) * Math.sin(y * water.xRobinet / 40 - y) + water.faucetSpeed;
     //Keeps xRobinet between 0 and 80
     water.xRobinet = Math.min(Math.max(water.xRobinet, 0), 80);
 
