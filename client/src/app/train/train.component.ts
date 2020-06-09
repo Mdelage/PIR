@@ -4,6 +4,10 @@ import { Subscription } from 'rxjs/Subscription';
 import { GlobalDatasService } from '../services/global-datas.service';
 import { interval } from 'rxjs/observable/interval';
 import { messages } from '../../../../languages';
+import {
+  gameTime,
+  water
+} from '../../../../settings';
 
 @Component({
   selector: 'app-train',
@@ -13,6 +17,7 @@ import { messages } from '../../../../languages';
 export class TrainComponent implements OnInit, OnDestroy {
 
   language : string ;
+  messageArray : object = messages;
 
    //control x axis
    faucetControl : number = 0;
@@ -38,15 +43,15 @@ export class TrainComponent implements OnInit, OnDestroy {
    leakCounter : number = 0;
 
    //water management
-   xRobinet : number = 42;
-   coeffSpeed : number = 20;
-   piValue : number = 3.1415;
-   decal : number = 4;
-   faucetXAxis : number = 2 * 10 / 40;
-   yRobinet : number ;
-   coeffXRob : number = 10;
-   constXRob : number = 50;
-   waterLevelContainer : number = 50;
+   xRobinet : number = water.xRobinet;
+   coeffSpeed : number = water.coeffSpeed;
+   piValue : number = water.piValue;
+   decal : number = water.decal;
+   faucetXAxis : number = water.faucetXAxis;
+   yRobinet : number = water.yRobinet;
+   coeffXRob : number = water.coeffXRob;
+   constXRob : number = water.constXRob;
+   waterLevelContainer : number = water.waterLevelContainer;
 
    //intervals subscribers
    waterManagementSubscriber : Subscription;
@@ -95,13 +100,17 @@ export class TrainComponent implements OnInit, OnDestroy {
   }
  
    ngOnInit() {
+     
 
     //globalDatas and authentification
      this.language = this.globalDatasService.language;
 
 
     //leaks init
-    for (var i=0; i < this.leakPlacesNb; i++) {
+    var i;
+    var l = this.leakPlacesNb;
+     
+    for (i=0; i < l; i++) {
       this.leakPlaces.push(this.leakCounter);
       this.leakCounter++;
       this.noLeakAt.push(true);

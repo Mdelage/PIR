@@ -25,6 +25,8 @@ const water = {
   yRobinet : 0,
   coeffXRob : 10,
   constXRob : 50,
+  piValue : 3.1415,
+  decal : 4,
 }
 exports.water = water;
 

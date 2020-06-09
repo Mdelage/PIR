@@ -466,7 +466,6 @@ export class MainComponent implements OnInit, OnDestroy {
     this.messagesSubscription = this.socketService.onMessage().subscribe((data) => {
       
       var messageStr = this.messageArray[this.language + data.id]();
-      console.log(messageStr);
       this.messages.push({value : messageStr, status : data.status});
       
     });

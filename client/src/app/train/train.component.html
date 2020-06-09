@@ -1,210 +1,238 @@
-<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet"> 
 
+
+<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
 <div class="train"  [ngClass]="{'screenWrenchTrain': wrenchModeTrain}">
-	<div class="screenTrain">
-		<div class="twoparts">
-			<div class="watermngttrain">
-				<div class="waterBlocktrain">
-					<div class="maincontainer">
-						<div class="iconCircle">
-							<i style="color: #05BDFF;" class="fa fa-tint" aria-hidden="true"></i>
-						</div>
-						<div class="robinetcontainer">
-							<div class="arrowShowing"> <i class="fa fa-arrow-down" aria-hidden="true"></i> </div>
-							<div class="robinet" [ngStyle]="{left: xRobinet+2+'%', bottom: yRobinet/1.8 + 46 +'%'}"> 
-							</div>
-							<div class="wheel" *ngIf="direction!=0" [ngClass]="{wheelinverse: direction<0}"  [ngStyle]="{left: xRobinet+7.9+'%', bottom: yRobinet/1.8+60+'%', 'animation-duration': animTime + 's'}"> 
-							</div>
-							<div class="wheel" *ngIf="direction==0" [ngStyle]="{left: xRobinet+7.9+'%', bottom: yRobinet/1.8+60+'%'}"> 
-							</div>
-							<div class="string" [ngStyle]="{left: xRobinet+11.5+'%', bottom: yRobinet/1.8+54+'%'}"> 
-							</div>
-							<div class="robinetwaterContainer" [ngStyle]="{left: xRobinet+decal-0.6+'%', bottom: yRobinet/1.8 + 41 +'%'}">
-								<div class="robinetwater" [ngStyle]="{width: waterWidth + 'vw', 'background-size': waterWidth + 'vw 1vw'}">				
-								</div>
-							</div>
-							<div class="montainAxis"> 
-							</div>
-							<div class="neckcontainer" style="top:35%">
-							</div>
-							<div class="tankcontainer">	
-								<div class="tankcontainerwaterpart">
-									<div class="tankcontainerwaterviz">
-										<div class="graduations"> </div>
-										<div class="tankcontainerwater" [ngStyle]="{height: waterLevelContainer + '%'}"> 
-										</div>
-									</div>
-								</div>    
-								<div class="tankcontainerleakspart">
-									<div class="wrapLeaks">
-									<div class="leakContainer" *ngFor="let value of leakPlaces, let key = index">
-										<div class="leak" [ngClass]="{nonvisible: noLeakAt[key]}" [ngStyle]="{'transform': 'scale(' + leaksReverse[key] + ', 1)', 'left': leftValues[key] + '%'}"  (click)="clickLeak(key)">
-										</div>
-									</div>
-								</div>
-								</div>
-								<div class="legsContainer">
-									<div class="legs">
-									</div>                           	
-								</div>
-							</div>
-							<div class="wmbuttons">
-								 <i class="fa fa-mouse-pointer" aria-hidden="true"></i> 
-								<div class="speed">  
-									<div class="wheelsmall2"> </div> 
-									<div *ngIf="language=='english'"> speed: {{faucetControlShow}} </div>
-									<div *ngIf="language=='french'"> vitesse: {{faucetControlShow}} </div>
-								</div>
-								<div class="buttonWheel">
-									<div class="buttonChar">
-										<div class="mainbuttonL" [ngClass]="{cursorPointer: !wrenchModeTrain}" (click)="faucetCtrlFctMinus()"> 
-											<i class="fa fa-undo" aria-hidden="true"></i>
-											<div class="wheelsmall"> </div>
-										</div>
-										<div class="char"> s </div>
-									</div>
-									<div class="buttonletterChar">
-										<div class="mainbuttonR" [ngClass]="{cursorPointer: !wrenchModeTrain}" (click)="faucetCtrlFctPlus()"> 
-											<i class="fa fa-undo" aria-hidden="true"></i>
-											<div class="wheelsmall"> </div>
-										</div>
-										<div class="char"> d </div>
-									</div>
-								</div>
-								<div class="buttonletterChar">
-									<div class="pushButton" [ngClass]="{cursorPointer: !wrenchModeTrain}" (click)="waterPushButton()">
-										<div class="buttonTap">
-										</div>
-									</div>
-									<div class="char"> e </div>
-								</div>
-								<div class="buttonletterChar">
-									<div class="wrenchButton" [ngClass]="{cursorPointer: !wrenchModeTrain}" (click)="wrenchOnOff()">
-										<i class="fa fa-wrench" aria-hidden="true"></i>
-									</div>
-									<div class="char"> a </div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="robotcommandstrain">
-				<div class="robotblocktrain">
-					<div class="maincontainer">
-						<div class="iconCircle">
-							<i style="color: #05BDFF;" class="fa fa-gamepad" aria-hidden="true"></i>
-						</div>
-						<div class="robotControl">
-							<div class="explainkeys">
-								<div class="littlesplatch">
-								</div>
-								<div class="spaceKey">
-									<div *ngIf="language=='english'"> SPACE </div>	
-									<div *ngIf="language=='french'"> ESPACE </div>					
-								</div>
-							</div>
-							<div class="explainkeys">
-								<div class="arrowFor">
-								</div>
-								<div class="anykey">
-									<div> <i class="fa fa-arrow-up" aria-hidden="true"></i> </div>					
-								</div>
-							</div>
-							<div class="explainkeys">
-								<div class="arrowBack">
-								</div>
-								<div class="anykey">
-									<div> <i class="fa fa-arrow-down" aria-hidden="true"></i> </div>					
-								</div>
-							</div>
-							<div class="explainkeys">
-								<div class="arrowLeft">
-								</div>
-								<div class="anykey">
-									<div> <i class="fa fa-arrow-left" aria-hidden="true"></i> </div>					
-								</div>
-							</div>
-							<div class="explainkeys">
-								<div class="arrowRight">
-								</div>
-								<div class="anykey">
-									<div> <i class="fa fa-arrow-right" aria-hidden="true"></i> </div>					
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="cooperationBlock">
-				<div class="coopActionsPlain" style="background-color: #05BDFF;height: 40%;">
-				<div class="exchangeRessources">
-					<div class="buttonletterChar">
-						<div class="exchangeButton" >
-							<div class="sendWater" >
-							</div>
-						</div>
-						<div class="char"> r </div>
-					</div>
-					<div class="buttonletterChar">
-						<div class="exchangeButton" >
-							<div class="sendElec">
-							</div>
-						</div>
-						<div class="char"> f </div>
-					</div>
-				</div>
-				<div class="exchangeRessources">
-					<div class="buttonletterChar">
-						<div class="exchangeButton" >
-							<div class="receiveWater">
-							</div>
-						</div>
-						<div class="char"> t </div>
-						</div>
-				<div class="buttonletterChar">
-					<div class="exchangeButton" >
-						<div class="receiveElec">
-						</div>
-					</div>
-					<div class="char"> g </div>
-				</div>
-			</div>
-				</div>
-		<div class="comms" style="height: 40%;">
-			<button class="commButton1">
-				Please refill water tank
-				<div class="char"> w </div>
-			</button>
-			<button class="commButton1" >
-				I'm going to refuel
-				<div class="char"> x </div>
-			</button>
-			<button class="commButton2" >
-				Need water
-				<div class="char"> c </div>
-			</button>
-			<button class="commButton2" >
-				Need electricity
-				<div class="char"> v </div>
-			</button>
-			<button class="commButton3" >
-				Ok
-				<div class="char"> b </div>
-			</button>
-			<button class="commButton3" >
-				No
-				<div class="char"> n </div>
-			</button>
-		</div>
-			</div>
-			<div class="videoOrGoback" style="width:20%;">
-				<div [routerLink]="['/videodemo']" class="gohomeTrain" *ngIf="language=='english'"> <i class="fa fa-video-camera" aria-hidden="true"></i> see a video of the game </div>
-				<div [routerLink]="['/welcome']" class="gohomeTrain" *ngIf="language=='english'"> <i class="fa fa-reply" aria-hidden="true"></i> back to main menu </div>	
-				<div [routerLink]="['/videodemo']" class="gohomeTrain" *ngIf="language=='french'"> <i class="fa fa-video-camera" aria-hidden="true"></i> voir une vidéo du jeu </div>
-				<div [routerLink]="['/welcome']" class="gohomeTrain" *ngIf="language=='french'"> <i class="fa fa-reply" aria-hidden="true"></i> retour au menu principal</div>	
-			</div>
-			
-		</div>
-	</div>
+  <div class="screenTrain">
+    <div class="twoparts">
+      <div class="watermngttrain">
+        <div class="waterBlocktrain">
+          <div class="maincontainer">
+            <div class="iconCircle">
+              <i style="color: #05BDFF;" class="fa fa-tint" aria-hidden="true"></i>
+            </div>
+            <div class="robinetcontainer">
+              <div class="arrowShowing"> <i class="fa fa-arrow-down" aria-hidden="true"></i> </div>
+              <div class="robinet" [ngStyle]="{left: xRobinet+2+'%', bottom: yRobinet/1.8 + 46 +'%'}"> 
+              </div>
+              <div class="wheel" *ngIf="direction!=0" [ngClass]="{wheelinverse: direction<0}"  [ngStyle]="{left: xRobinet+7.9+'%', bottom: yRobinet/1.8+60+'%', 'animation-duration': animTime + 's'}"> 
+            </div>
+            <div class="wheel" *ngIf="direction==0" [ngStyle]="{left: xRobinet+7.9+'%', bottom: yRobinet/1.8+60+'%'}"> 
+          </div>
+          <div class="string" [ngStyle]="{left: xRobinet+11.5+'%', bottom: yRobinet/1.8+54+'%'}"> 
+          </div>
+          <div class="robinetwaterContainer" [ngStyle]="{left: xRobinet+decal-0.6+'%', bottom: yRobinet/1.8 + 41 +'%'}">
+            <div class="robinetwater" [ngStyle]="{width: waterWidth + 'vw', 'background-size': waterWidth + 'vw 1vw'}">				
+            </div>
+          </div>
+          <div class="montainAxis"> 
+          </div>
+          <div class="neckcontainer" style="top:35%">
+          </div>
+          <div class="tankcontainer">
+            <div class="tankcontainerwaterpart">
+              <div class="tankcontainerwaterviz">
+                <div class="graduations"> </div>
+                <div class="tankcontainerwater" [ngStyle]="{height: waterLevelContainer + '%'}"> 
+                </div>
+              </div>
+            </div>
+            <div class="tankcontainerleakspart">
+              <div class="wrapLeaks">
+                <div class="leakContainer" *ngFor="let value of leakPlaces, let key = index">
+                  <div class="leak" [ngClass]="{nonvisible: noLeakAt[key]}" [ngStyle]="{'transform': 'scale(' + leaksReverse[key] + ', 1)', 'left': leftValues[key] + '%'}"  (click)="clickLeak(key)">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="legsContainer">
+            <div class="legs">
+            </div>
+          </div>
+        </div>
+        <div class="wmbuttons">
+          <i class="fa fa-mouse-pointer" aria-hidden="true"></i> 
+          <div class="speed">
+            <div class="wheelsmall2"> </div>
+            <div *ngIf="language=='english'"> speed: {{faucetControlShow}} </div>
+            <div *ngIf="language=='french'"> vitesse: {{faucetControlShow}} </div>
+          </div>
+          <div class="buttonWheel">
+            <div class="buttonChar">
+              <div class="mainbuttonL" [ngClass]="{cursorPointer: !wrenchModeTrain}" (click)="faucetCtrlFctMinus()"> 
+              <i class="fa fa-undo" aria-hidden="true"></i>
+              <div class="wheelsmall"> </div>
+            </div>
+            <div class="char"> s </div>
+          </div>
+          <div class="buttonletterChar">
+            <div class="mainbuttonR" [ngClass]="{cursorPointer: !wrenchModeTrain}" (click)="faucetCtrlFctPlus()"> 
+            <i class="fa fa-undo" aria-hidden="true"></i>
+            <div class="wheelsmall"> </div>
+          </div>
+          <div class="char"> d </div>
+        </div>
+      </div>
+      <div class="buttonletterChar">
+        <div class="pushButton" [ngClass]="{cursorPointer: !wrenchModeTrain}" (click)="waterPushButton()">
+        <div class="buttonTap">
+        </div>
+      </div>
+      <div class="char"> e </div>
+    </div>
+    <div class="buttonletterChar">
+      <div class="wrenchButton" [ngClass]="{cursorPointer: !wrenchModeTrain}" (click)="wrenchOnOff()">
+      <i class="fa fa-wrench" aria-hidden="true"></i>
+    </div>
+    <div class="char"> a </div>
+  </div>
 </div>
+</div>
+</div>
+</div>
+</div>
+      <div class="robotcommandstrain">
+  <div class="robotblocktrain">
+    <div class="maincontainer">
+      <div class="iconCircle">
+        <i style="color: #05BDFF;" class="fa fa-gamepad" aria-hidden="true"></i>
+      </div>
+      <div class="robotControl">
+        <div class="explainkeys">
+          <div class="littlesplatch">
+          </div>
+          <div class="spaceKey">
+            <div *ngIf="language=='english'"> SPACE </div>
+            <div *ngIf="language=='french'"> ESPACE </div>
+          </div>
+        </div>
+        <div class="explainkeys">
+          <div class="arrowFor">
+          </div>
+          <div class="anykey">
+            <div> <i class="fa fa-arrow-up" aria-hidden="true"></i> </div>
+          </div>
+        </div>
+        <div class="explainkeys">
+          <div class="arrowBack">
+          </div>
+          <div class="anykey">
+            <div> <i class="fa fa-arrow-down" aria-hidden="true"></i> </div>
+          </div>
+        </div>
+        <div class="explainkeys">
+          <div class="arrowLeft">
+          </div>
+          <div class="anykey">
+            <div> <i class="fa fa-arrow-left" aria-hidden="true"></i> </div>
+          </div>
+        </div>
+        <div class="explainkeys">
+          <div class="arrowRight">
+          </div>
+          <div class="anykey">
+            <div> <i class="fa fa-arrow-right" aria-hidden="true"></i> </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="cooperationBlock">
+  <div class="coopActionsPlain" style="background-color: #05BDFF;height: 40%;">
+    <div class="exchangeRessources">
+      <div class="buttonletterChar">
+        <div class="exchangeButton" >
+          <div class="sendWater" >
+          </div>
+        </div>
+        <div class="char"> r </div>
+      </div>
+      <div class="buttonletterChar">
+        <div class="exchangeButton" >
+          <div class="sendElec">
+          </div>
+        </div>
+        <div class="char"> f </div>
+      </div>
+    </div>
+    <div class="exchangeRessources">
+      <div class="buttonletterChar">
+        <div class="exchangeButton" >
+          <div class="receiveWater">
+          </div>
+        </div>
+        <div class="char"> t </div>
+      </div>
+      <div class="buttonletterChar">
+        <div class="exchangeButton" >
+          <div class="receiveElec">
+          </div>
+        </div>
+        <div class="char"> g </div>
+      </div>
+    </div>
+  </div>
+  <div class="comms" *ngIf="language=='english'" style="height: 40%;">
+    <button class="commButton1">
+      {{ messageArray.english1() }}
+      <div class="char"> w </div>
+    </button>
+    <button class="commButton1" >
+      {{ messageArray.english2() }}
+      <div class="char"> x </div>
+    </button>
+    <button class="commButton2" >
+      {{ messageArray.english3() }}
+      <div class="char"> c </div>
+    </button>
+    <button class="commButton2" >
+      {{ messageArray.english4() }}
+      <div class="char"> v </div>
+    </button>
+    <button class="commButton3" >
+      {{ messageArray.english5() }}
+      <div class="char"> b </div>
+    </button>
+    <button class="commButton3" >
+      {{ messageArray.english6() }}
+      <div class="char"> n </div>
+    </button>
+  </div>
+  <div class="comms" *ngIf="language=='french'" style="height: 40%;">
+    <button class="commButton1">
+      {{ messageArray.french1() }}
+      <div class="char"> w </div>
+    </button>
+    <button class="commButton1" >
+      {{ messageArray.french2() }}
+      <div class="char"> x </div>
+    </button>
+    <button class="commButton2" >
+      {{ messageArray.french3() }}
+      <div class="char"> c </div>
+    </button>
+    <button class="commButton2" >
+      {{ messageArray.french4() }}
+      <div class="char"> v </div>
+    </button>
+    <button class="commButton3" >
+      {{ messageArray.french5() }}
+      <div class="char"> b </div>
+    </button>
+    <button class="commButton3" >
+      {{ messageArray.french6() }}
+      <div class="char"> n </div>
+    </button>
+  </div>
+</div>
+      <div class="videoOrGoback" style="width:20%;">
+  <div [routerLink]="['/videodemo']" class="gohomeTrain" *ngIf="language=='english'"> <i class="fa fa-video-camera" aria-hidden="true"></i> see a video of the game 
+</div>
+<div [routerLink]="['/welcome']" class="gohomeTrain" *ngIf="language=='english'"> <i class="fa fa-reply" aria-hidden="true"></i> back to main menu </div>	
+<div [routerLink]="['/videodemo']" class="gohomeTrain" *ngIf="language=='french'"> <i class="fa fa-video-camera" aria-hidden="true"></i> voir une vidéo du jeu </div>
+<div [routerLink]="['/welcome']" class="gohomeTrain" *ngIf="language=='french'"> <i class="fa fa-reply" aria-hidden="true"></i> retour au menu principal</div>	
+</div>
+    </div>
+</div>
+</div>
+
