@@ -3,15 +3,16 @@
 <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
 <div class="train"  [ngClass]="{'screenWrenchTrain': wrenchModeTrain}">
   <div class="screenTrain">
-    <div class="toprow" *ngIf="language=='english'">
-      <div class="select" (click)="changeDisp(0)">Robot</div>
-      <div class="select" (click)="changeDisp(1)">Water Tank</div>
-      <div class="select" (click)="changeDisp(2)">Cooperation</div>
-    </div>
-    <div class="toprow" *ngIf="language=='french'">
-      <div class="select" (click)="changeDisp(0)">Robot</div>
-      <div class="select" (click)="changeDisp(1)">Réservoir d'eau</div>
-      <div class="select" (click)="changeDisp(2)">Coopération</div>
+    <div class="toprow">
+      <div class="select {{ selected[0] }}" (click)="changeDisp(0)">Robot</div>
+      <div class="select {{ selected[1] }}" (click)="changeDisp(1)">
+        <span *ngIf="language=='english'">Water Tank</span>
+        <span *ngIf="language=='french'">Réservoir d'eau</span>
+      </div>
+      <div class="select {{ selected[2] }}" (click)="changeDisp(2)">
+        <span *ngIf="language=='english'">Cooperation</span>
+        <span *ngIf="language=='french'">Coopération</span>
+      </div>
     </div>
     <div class="twoparts">
       <div class="robotcommandstrain" *ngIf="controlDisplay==0">

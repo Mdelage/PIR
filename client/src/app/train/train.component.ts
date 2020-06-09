@@ -24,10 +24,15 @@ export class TrainComponent implements OnInit, OnDestroy {
   1 : Water Tank
   2 : Cooperation */
   controlDisplay : number = 0;
+  selected : string[] = ["selected", "", ""];
   
   // Those methods change the controls to display
   changeDisp (x: number) {
+    this.selected[this.controlDisplay] = "";
+    
     this.controlDisplay = x;
+    this.selected[x] = "selected";
+    
     this.wrenchModeTrain = false;
   }
    
