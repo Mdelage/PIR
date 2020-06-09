@@ -202,9 +202,13 @@
 				{{ messageArray.french4() }}
 				<div class="char"> v </div>
 			</button>
-			<button class="commButton3" >
-				OK
-				<div class="char"> b </div>
+            <button class="commButton3" *ngIf="language=='english'">
+				{{ messageArray.english5() }}
+				<div class="char"> n </div>
+			</button>
+			<button class="commButton2" *ngIf="language=='french'">
+				{{ messageArray.french5() }}
+				<div class="char"> v </div>
 			</button>
 			<button class="commButton3" *ngIf="language=='english'">
 				{{ messageArray.english6() }}

@@ -11,7 +11,7 @@ exports.waitingTime = waitingTime;
 /* Settings related to the water tank */
 const water = {
   // The absolute max speed of the faucet
-  faucetMaxSpeed : 4,
+  faucetMaxSpeed : 4.0,
   // The acceleration of the faucet when manipulating it
   faucetAcceleration : 1.0,
   // The natural decceleration of the faucet
