@@ -19,6 +19,18 @@ export class TrainComponent implements OnInit, OnDestroy {
   language : string ;
   messageArray : object = messages;
 
+  /* For selecting which controls to display
+  0 : Robot Control
+  1 : Water Tank
+  2 : Cooperation */
+  controlDisplay = 0;
+  
+  // Those methods change the controls to display
+  dispRobot () { this.controlDisplay = 0;}
+  dispWaterTank () { this.controlDisplay = 1; }
+  dispCooperation () { this.controlDisplay = 2; }
+  
+  
    //control x axis
    faucetSpeed : number = 0;
    faucetSpeedShow : string = '0';
@@ -220,14 +232,11 @@ export class TrainComponent implements OnInit, OnDestroy {
 
   faucetCtrlFctMinus(){
     var x = this.faucetSpeed;
-    
-    console.log(this.faucetAcceleration);
   
     this.faucetSpeed = Math.max(
       -this.faucetMaxSpeed,
       this.roundNumber(x - this.faucetAcceleration, 1)
     );
-    console.log(this.faucetSpeed);
     this.direction = Math.sign(x);
     this.animTime = 10 - Math.abs(x)*3;
   
