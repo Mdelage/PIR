@@ -3,10 +3,15 @@
 <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
 <div class="train"  [ngClass]="{'screenWrenchTrain': wrenchModeTrain}">
   <div class="screenTrain">
-    <div class="toprow">
-      <div class="select" (click)="dispRobot()">Robot</div>
-      <div class="select" (click)="dispWaterTank()">Water Tank</div>
-      <div class="select" (click)="dispCooperation()">Cooperation</div>
+    <div class="toprow" *ngIf="language=='english'">
+      <div class="select" (click)="changeDisp(0)">Robot</div>
+      <div class="select" (click)="changeDisp(1)">Water Tank</div>
+      <div class="select" (click)="changeDisp(2)">Cooperation</div>
+    </div>
+    <div class="toprow" *ngIf="language=='french'">
+      <div class="select" (click)="changeDisp(0)">Robot</div>
+      <div class="select" (click)="changeDisp(1)">Réservoir d'eau</div>
+      <div class="select" (click)="changeDisp(2)">Coopération</div>
     </div>
     <div class="twoparts">
       <div class="watermngttrain" *ngIf="controlDisplay==1">
@@ -230,13 +235,13 @@
     </button>
   </div>
 </div>
-      <div class="videoOrGoback" style="width:20%;">
-  <div [routerLink]="['/videodemo']" class="gohomeTrain" *ngIf="language=='english'"> <i class="fa fa-video-camera" aria-hidden="true"></i> see a video of the game 
-</div>
-<div [routerLink]="['/welcome']" class="gohomeTrain" *ngIf="language=='english'"> <i class="fa fa-reply" aria-hidden="true"></i> back to main menu </div>	
-<div [routerLink]="['/videodemo']" class="gohomeTrain" *ngIf="language=='french'"> <i class="fa fa-video-camera" aria-hidden="true"></i> voir une vidéo du jeu </div>
-<div [routerLink]="['/welcome']" class="gohomeTrain" *ngIf="language=='french'"> <i class="fa fa-reply" aria-hidden="true"></i> retour au menu principal</div>	
-</div>
+    </div>
+    <div class="videoOrGoback">
+      <div [routerLink]="['/videodemo']" class="gohomeTrain" *ngIf="language=='english'"> <i class="fa fa-video-camera" aria-hidden="true"></i> Video tutorial 
+      </div>
+      <div [routerLink]="['/welcome']" class="gohomeTrain" *ngIf="language=='english'"> <i class="fa fa-reply" aria-hidden="true"></i> Main menu </div>	
+      <div [routerLink]="['/videodemo']" class="gohomeTrain" *ngIf="language=='french'"> <i class="fa fa-video-camera" aria-hidden="true"></i> Tutoriel vidéo </div>
+      <div [routerLink]="['/welcome']" class="gohomeTrain" *ngIf="language=='french'"> <i class="fa fa-reply" aria-hidden="true"></i> Menu principal</div>	
     </div>
 </div>
 </div>

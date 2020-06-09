@@ -23,14 +23,14 @@ export class TrainComponent implements OnInit, OnDestroy {
   0 : Robot Control
   1 : Water Tank
   2 : Cooperation */
-  controlDisplay = 0;
+  controlDisplay : number = 0;
   
   // Those methods change the controls to display
-  dispRobot () { this.controlDisplay = 0;}
-  dispWaterTank () { this.controlDisplay = 1; }
-  dispCooperation () { this.controlDisplay = 2; }
-  
-  
+  changeDisp (x: number) {
+    this.controlDisplay = x;
+    this.wrenchModeTrain = false;
+  }
+   
    //control x axis
    faucetSpeed : number = 0;
    faucetSpeedShow : string = '0';
@@ -312,8 +312,11 @@ export class TrainComponent implements OnInit, OnDestroy {
     }
   };
 
-   wrenchOnOff(){
-    this.wrenchModeTrain = !this.wrenchModeTrain;
+   wrenchOnOff() {
+    // We only change the wrench if the water tank control are displayed
+    if (this.controlDisplay == 1) {
+      this.wrenchModeTrain = !this.wrenchModeTrain;
+    }
    }
    
 }
