@@ -1468,17 +1468,21 @@ io.on('connection', (socket) => {
                       waitingTime -= 1;
                       socketNb1.emit("timeBeforeStart", {timeBeforeStart : waitingTime});
                       socketNb2.emit("timeBeforeStart", {timeBeforeStart : waitingTime});
-
-                    } else {
-
+                      
                       if (nbReadyPlayers === 2) {
 
                         socketNb1.emit("launchingGame", {});
                         socketNb2.emit("launchingGame", {});
                         nbPlayersLogged = 0;
                         initGame();
+                        clearInterval(waitingRepeater);
 
-                      } else {
+                      }
+                      
+
+                    } else {
+                      
+
 
                         if (player1Ready) {
 
@@ -1513,7 +1517,7 @@ io.on('connection', (socket) => {
                           element.socket.emit("remainingTimeResponse", {remainingTime : remainingTime});	
                         });
 
-                      }
+                      
 
                       clearInterval(waitingRepeater);
 
@@ -1560,6 +1564,7 @@ io.on('connection', (socket) => {
 				pseudo2 = "anonymous";
 			}
 		}
+      
 		if(gameWillSoonStart && (playerNumber != 0)){
 			if(playerNumber === 1 && !player1Ready){
 				player1Ready = true;

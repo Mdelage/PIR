@@ -74,8 +74,8 @@ export class LoadingComponent implements OnInit, OnDestroy {
   }
 
   ready(){
-    this.socketService.sendReady(this.pseudo);
     this.isReady = true;
+    this.socketService.sendReady(this.pseudo);
   }
 
   initDotTimer(){
