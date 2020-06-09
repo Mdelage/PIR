@@ -20,8 +20,8 @@ export class TrainComponent implements OnInit, OnDestroy {
   messageArray : object = messages;
 
    //control x axis
-   faucetControl : number = 0;
-   faucetControlShow : string = '0';
+   faucetSpeed : number = 0;
+   faucetSpeedShow : string = '0';
    direction : number = 0;
    animTime : number = 0;
 
@@ -52,6 +52,11 @@ export class TrainComponent implements OnInit, OnDestroy {
    coeffXRob : number = water.coeffXRob;
    constXRob : number = water.constXRob;
    waterLevelContainer : number = water.waterLevelContainer;
+  
+  faucetMaxSpeed : number = water.faucetMaxSpeed;
+  faucetAcceleration : number = water.faucetAcceleration;
+  faucetDecceleration : number = water.faucetDecceleration;
+  
 
    //intervals subscribers
    waterManagementSubscriber : Subscription;
@@ -121,7 +126,34 @@ export class TrainComponent implements OnInit, OnDestroy {
 
     //intervals
     this.waterManagementSubscriber = interval(200).subscribe( () => {
-      if((this.xRobinet <= 80) && (this.xRobinet >= 0)) {
+      var x;
+      var y = this.piValue;
+      var sign = "  ";
+
+      // Rounds to the first digit
+      this.faucetSpeed = this.roundNumber(this.faucetSpeed, 1); 
+
+      // The speed which will be displayed
+      x = this.faucetSpeed;
+      if (x > 0) { sign = "+ "} else if (x < 0) { sign = "- " }; 
+      this.faucetSpeedShow = sign + Math.abs(x).toFixed(1);
+
+      /* Decreasing of the speed.
+      When it's negative, we add the decceleration.
+      When it's positive, we substract the decceleration. */
+      this.faucetSpeed -= Math.sign(this.faucetSpeed) * this.faucetDecceleration;
+
+      this.xRobinet += this.coeffSpeed * (y / 80) * Math.sin(y * this.xRobinet / 40 - y) + this.faucetSpeed;
+      //Keeps xRobinet between 0 and 80
+      this.xRobinet = Math.min(Math.max(this.xRobinet, 0), 80);
+
+      //this.xRobinet += this.decal;
+      this.faucetXAxis = (this.xRobinet - 40) * 10 / 40;
+      this.yRobinet = this.coeffXRob * Math.cos(this.faucetXAxis* y *2 / 20) + this.constXRob;
+
+
+      // Old way
+      /*if((this.xRobinet <= 80) && (this.xRobinet >= 0)) {
         this.xRobinet = this.xRobinet + this.coeffSpeed * (this.piValue / 80) * Math.sin(this.piValue * this.xRobinet / 40 - this.piValue) + this.faucetControl;
       } else if(this.xRobinet > 80) {
         this.xRobinet = 80;
@@ -130,7 +162,7 @@ export class TrainComponent implements OnInit, OnDestroy {
       }
       //this.xRobinet += this.decal;
       this.faucetXAxis = (this.xRobinet - 40) * 10 / 40;
-      this.yRobinet = this.coeffXRob * Math.cos(this.faucetXAxis* this.piValue *2 / 20) + this.constXRob;
+      this.yRobinet = this.coeffXRob * Math.cos(this.faucetXAxis* this.piValue *2 / 20) + this.constXRob;*/
 
     });
 
@@ -179,9 +211,29 @@ export class TrainComponent implements OnInit, OnDestroy {
      this.waterFlowSubscriber.unsubscribe();
      this.leaksSubscriber.unsubscribe();
    }
+  
+  //This function rounds to a given amount of digits a number x
+  roundNumber (x, digits) {
+    var tens = 10 * digits;
+    return Math.round((x + Number.EPSILON) * tens) / tens;
+  };
 
-   faucetCtrlFctMinus(){
-    if(this.faucetControl > -3) {
+  faucetCtrlFctMinus(){
+    var x = this.faucetSpeed;
+    
+    console.log(this.faucetAcceleration);
+  
+    this.faucetSpeed = Math.max(
+      -this.faucetMaxSpeed,
+      this.roundNumber(x - this.faucetAcceleration, 1)
+    );
+    console.log(this.faucetSpeed);
+    this.direction = Math.sign(x);
+    this.animTime = 10 - Math.abs(x)*3;
+  
+    // Old way
+    /*
+     if(this.faucetControl > -3) {
       this.faucetControl--; 
       this.faucetControlShow = this.faucetControl.toString();
     }
@@ -195,11 +247,23 @@ export class TrainComponent implements OnInit, OnDestroy {
     else{
       this.direction = 0;
     }
-    this.animTime = 10 - Math.abs(this.faucetControl)*3;
+    this.animTime = 10 - Math.abs(this.faucetControl)*3; */
    }
 
-   faucetCtrlFctPlus(){
-    if(this.faucetControl < 3) {
+  faucetCtrlFctPlus(){
+    var x = this.faucetSpeed;
+  
+    this.faucetSpeed = Math.min(
+      this.faucetMaxSpeed,
+      this.roundNumber(x + this.faucetAcceleration, 1)
+    ); 
+  
+    this.direction = Math.sign(x);
+    this.animTime = 10 - Math.abs(x)*3;
+     
+     
+    // Old way
+     /*if(this.faucetControl < 3) {
       this.faucetControl++; 
       this.faucetControlShow = this.faucetControl.toString();
     }
@@ -214,7 +278,8 @@ export class TrainComponent implements OnInit, OnDestroy {
       this.direction = 0;
     }
     this.animTime = 7 - Math.abs(this.faucetControl)*2;
-
+    */
+     
    }
 
    waterPushButton(){
