@@ -1118,7 +1118,7 @@ function startGame(){
       player2Datas.stringWriteClicks += "'";
       player1Datas.stringWriteUsedKeys += "'";
       player2Datas.stringWriteUsedKeys += "'";
-      wstream.write(remainingTime + ', ' + firesString() + ', ' + teamScore + ', ' + water.waterLevelContainer+ ', ' + leakPlacesString() + ', ' + player1Datas.personnalScore + ', ' + player1Datas.autonomousMode + ', ' + player1Datas.stringWriteAlarms + ', ' + player1Datas.pos[0] + ', ' + player1Datas.pos[1] + ', ' + player1Datas.pos[2] + ', ' + player1Datas.battery + ', ' + player1Datas.temperature + ', ' + player1Datas.waterLevel + ', ' + player1Datas.stringWriteUsedKeys + ', ' + player1Datas.stringWriteClicks + ', ' + player2Datas.personnalScore + ', ' + player2Datas.autonomousMode + ', ' + player2Datas.stringWriteAlarms + ', ' + player2Datas.pos[0] + ', ' + player2Datas.pos[1] + ', ' + player2Datas.pos[2] + ', ' + player2Datas.battery + ', ' + player2Datas.temperature + ', ' + player2Datas.waterLevel + ', ' + player2Datas.stringWriteUsedKeys + ', ' + player2Datas.stringWriteClicks + '\n');
+      wstream.write(remainingTime + '; ' + firesString() + '; ' + teamScore + '; ' + water.waterLevelContainer+ '; ' + leakPlacesString() + '; ' + player1Datas.personnalScore + '; ' + player1Datas.autonomousMode + '; ' + player1Datas.stringWriteAlarms + '; ' + player1Datas.pos[0] + '; ' + player1Datas.pos[1] + '; ' + player1Datas.pos[2] + '; ' + player1Datas.battery + '; ' + player1Datas.temperature + '; ' + player1Datas.waterLevel + '; ' + player1Datas.stringWriteUsedKeys + '; ' + player1Datas.stringWriteClicks + '; ' + player2Datas.personnalScore + '; ' + player2Datas.autonomousMode + '; ' + player2Datas.stringWriteAlarms + '; ' + player2Datas.pos[0] + '; ' + player2Datas.pos[1] + '; ' + player2Datas.pos[2] + '; ' + player2Datas.battery + '; ' + player2Datas.temperature + '; ' + player2Datas.waterLevel + '; ' + player2Datas.stringWriteUsedKeys + '; ' + player2Datas.stringWriteClicks + '\n');
       player1Datas.stringWriteAlarms = "'";
       player2Datas.stringWriteAlarms = "'";
       player1Datas.stringWriteClicks = "'";
@@ -1451,13 +1451,13 @@ io.on('connection', (socket) => {
                   gameWillSoonStart = true;
                   player1Ready = false;
                   player2Ready = false;
-                  waitingTime = 10;
+                  waitingTime = settings.waitingTime;
 
                   nbReadyPlayers = 0;
                   pseudo1 = '';
                   pseudo2 = '';
 
-                  //on lance un timer de 10 secondes : les joueurs doivent cliquer sur un bouton
+                  //on lance un timer de 15 secondes : les joueurs doivent cliquer sur un bouton
                   //avant la fin pour lancer la partie, ceux qui ne le font pas sont redirigés 
                   //en dehors de l'écran de chargement
                   //si les 2 le font la partie se lance
