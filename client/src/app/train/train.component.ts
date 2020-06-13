@@ -26,7 +26,7 @@ export class TrainComponent implements OnInit, OnDestroy {
   controlDisplay : number = 0;
   selected : string[] = ["selected", "", ""];
   
-  // Those methods change the controls to display
+  // This methods change the controls to display
   changeDisp (x: number) {
     this.selected[this.controlDisplay] = "";
     

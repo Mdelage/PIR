@@ -1,75 +1,85 @@
 <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet"> 
-<div class="howto"> 
-	<span class="titlehowto" *ngIf="language=='english'"> Context: </span> 
-	<span class="titlehowto" *ngIf="language=='french'"> Contexte: </span> 
-	<div class="rowhowto">
-		<div class="leftpartrow">
-			<i class="fa fa-android" aria-hidden="true"></i>
-		</div>
-		<div class="rightpartrow" *ngIf="language=='english'">
-			<span> Two firefighter robots are present in a small area </span>
-		</div>
-		<div class="rightpartrow" *ngIf="language=='french'">
-			<span> Deux robots pompiers se trouvent dans une petite zone </span>
-		</div>
-	</div>
-	<div class="rowhowto">
-		<div class="leftpartrow">
-			<i class="fa fa-tree" aria-hidden="true"></i>
-		</div>
-		<div class="rightpartrow" *ngIf="language=='english'">
-			<span>  with some trees  </span>
-		</div>
-		<div class="rightpartrow" *ngIf="language=='french'">
-			<span>  avec quelques arbres  </span>
-		</div>
-	</div>
-	<div class="rowhowto">
-		<div class="leftpartrow">
-			<i class="fa fa-fire" aria-hidden="true"></i>
-		</div>
-		<div class="rightpartrow" *ngIf="language=='english'">
-			<span>  which have a weird tendency to self-ignite... </span>
-		</div>
-		<div class="rightpartrow" *ngIf="language=='french'">
-			<span>  ayant une fâcheuse tendance à prendre feu... </span>
-		</div>
-	</div>
-	<div class="rowhowto">
-		<div class="leftpartrow">
-			<i class="fa fa-location-arrow" aria-hidden="true"></i>
-		</div>
-		<div class="rightpartrow" *ngIf="language=='english'">
-			<span> With your graphical interface, learn the robots whereabouts. </span>
-		</div>
-		<div class="rightpartrow" *ngIf="language=='french'">
-			<span> Grâce à l'interface graphique, observez les positions des robots. </span>
-		</div>
-	</div>
-	<div class="rowhowto">
-		<div class="leftpartrow">
-			<i class="fa fa-battery-three-quarters" aria-hidden="true"></i>
-		</div>
-		<div class="rightpartrow" *ngIf="language=='english'">
-			<span> The energy level of each robot decreases with time. Place your robot on the energy station (<span style="color: red;">red square</span>) to recharge it. </span>
-		</div>
-		<div class="rightpartrow" *ngIf="language=='french'">
-			<span> Le niveau de batterie de chaque robot diminue avec le temps. Placez votre robot sur la station de rechargement (<span style="color: red;">carré rouge</span>) pour le recharger. </span> 
-		</div>
-	</div>
-	<div class="rowhowto">
-		<div class="leftpartrow">
-			<i class="fa fa-tint" aria-hidden="true"></i>
-		</div>
-		<div class="rightpartrow" *ngIf="language=='english'">
-          <span> Your robot may run out of water. To refuel it, place it on the ground water tank station (<span style="color: blue;">blue square</span>). The water tank is not infinite. You or your teammate will have to fill it and fix its leaks. </span>
-		</div>
-		<div class="rightpartrow" *ngIf="language=='french'">
-			<span> Votre robot pourrait manquer d'eau. Pour en récupérer, placez-le sur la station du réservoir d'eau (<span style="color: blue;">carré bleu</span>). Le réservoir n'est pas infini. Vous ou votre coéquipier devront le remplir et réparer les fuites. </span>
-		</div>
-	</div>
-	<span class="titlehowto" *ngIf="language=='english'"> Goal: </span>
-	<span class="titlehowto" *ngIf="language=='french'"> But: </span>
+<div class="howto">
+  <div class="toprow">
+    <div class="select {{ selected[0] }}" (click)="changeDisp(0)">
+      <span class="titlehowto" *ngIf="language=='english'"> Context </span> 
+      <span class="titlehowto" *ngIf="language=='french'"> Contexte </span> 
+    </div>
+    <div class="select {{ selected[1] }}" (click)="changeDisp(1)">
+      <span class="titlehowto" *ngIf="language=='english'"> Goal </span>
+      <span class="titlehowto" *ngIf="language=='french'"> But </span>
+    </div>
+  </div>
+  <div class="content">
+    <div class="context" *ngIf="display==0">
+      <div class="rowhowto">
+          <div class="leftpartrow">
+              <i class="fa fa-android" aria-hidden="true"></i>
+          </div>
+          <div class="rightpartrow" *ngIf="language=='english'">
+              <span> Two firefighter robots are present in a small area, </span>
+          </div>
+          <div class="rightpartrow" *ngIf="language=='french'">
+              <span> Deux robots pompiers se trouvent dans une petite zone, </span>
+          </div>
+      </div>
+      <div class="rowhowto">
+          <div class="leftpartrow">
+              <i class="fa fa-tree" aria-hidden="true"></i>
+          </div>
+          <div class="rightpartrow" *ngIf="language=='english'">
+              <span>  with some trees,  </span>
+          </div>
+          <div class="rightpartrow" *ngIf="language=='french'">
+              <span>  avec quelques arbres,  </span>
+          </div>
+      </div>
+      <div class="rowhowto">
+          <div class="leftpartrow">
+              <i class="fa fa-fire" aria-hidden="true"></i>
+          </div>
+          <div class="rightpartrow" *ngIf="language=='english'">
+              <span>  which have a weird tendency to self-ignite... </span>
+          </div>
+          <div class="rightpartrow" *ngIf="language=='french'">
+              <span>  ayant une fâcheuse tendance à prendre feu... </span>
+          </div>
+      </div>
+      <div class="rowhowto">
+          <div class="leftpartrow">
+              <i class="fa fa-location-arrow" aria-hidden="true"></i>
+          </div>
+          <div class="rightpartrow" *ngIf="language=='english'">
+              <span> With your graphical interface, learn the robots whereabouts. </span>
+          </div>
+          <div class="rightpartrow" *ngIf="language=='french'">
+              <span> Grâce à l'interface graphique, observez les positions des robots. </span>
+          </div>
+      </div>
+      <div class="rowhowto">
+          <div class="leftpartrow">
+              <i class="fa fa-battery-three-quarters" aria-hidden="true"></i>
+          </div>
+          <div class="rightpartrow" *ngIf="language=='english'">
+              <span> The energy level of each robot decreases with time. Place your robot on the energy station (<span style="color: red;">red square</span>) to recharge it. </span>
+          </div>
+          <div class="rightpartrow" *ngIf="language=='french'">
+              <span> Le niveau de batterie de chaque robot diminue avec le temps. Placez votre robot sur la station de rechargement (<span style="color: red;">carré rouge</span>) pour le recharger. </span> 
+          </div>
+      </div>
+      <div class="rowhowto">
+          <div class="leftpartrow">
+              <i class="fa fa-tint" aria-hidden="true"></i>
+          </div>
+          <div class="rightpartrow" *ngIf="language=='english'">
+            <span> Your robot may run out of water. To refuel it, place it on the ground water tank station (<span style="color: blue;">blue square</span>). The water tank is not infinite. You or your teammate will have to fill it and fix its leaks. </span>
+          </div>
+          <div class="rightpartrow" *ngIf="language=='french'">
+              <span> Votre robot pourrait manquer d'eau. Pour en récupérer, placez-le sur la station du réservoir d'eau (<span style="color: blue;">carré bleu</span>). Le réservoir n'est pas infini. Vous ou votre coéquipier devront le remplir et réparer les fuites. </span>
+          </div>
+      </div>
+  </div>
+    <div class="display" *ngIf="display==1">
 	<div class="rowhowto">
 		<div class="leftpartrow">
 			<i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
@@ -138,7 +148,16 @@
 		<span> Le jeu se termine après la limite de temps, si les deux robots n'ont plus de batterie, ou si votre température est trop haute.</span>
 		</div>
 	</div>
+  </div>
+  </div>
 	
-	<div [routerLink]="['/welcome']" class="gohomeTrain" *ngIf="language=='english'"> <i class="fa fa-reply" aria-hidden="true"></i> back to main menu </div>
-	<div [routerLink]="['/welcome']" class="gohomeTrain" *ngIf="language=='french'"> <i class="fa fa-reply" aria-hidden="true"></i> retour au menu principal</div>
+  <div [routerLink]="['/welcome']" class="gohomeTrain" *ngIf="language=='english'">
+    <i class="fa fa-reply" aria-hidden="true"></i>
+    <span class="mainMenu" >Main menu</span> 
+  </div>
+  <div [routerLink]="['/welcome']" class="gohomeTrain" *ngIf="language=='french'">
+    <i class="fa fa-reply" aria-hidden="true"></i>
+    <span class="mainMenu" >Menu principal</span> 
+  </div>
+  
 </div>
