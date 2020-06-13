@@ -32,6 +32,15 @@ var globalToken = 0;
 var gameAvailable = true;
 var gameWillSoonStart = false;
 
+/* This variable will tell the server which type should it load
+0: normal
+1: modified dialogues
+2: no dialogue */
+var gameType = 0;
+
+/* This function change the game type. The idea is to cycle
+through each type after every game */
+var nextGameType = () => { gameType = (gameType + 1) % 3; }
 
 var nbPlayersLogged = 0;
 /*             END VARIABLES         */
@@ -1474,8 +1483,13 @@ io.on('connection', (socket) => {
                         socketNb1.emit("launchingGame", {});
                         socketNb2.emit("launchingGame", {});
                         nbPlayersLogged = 0;
+                        
+                        // Starting the game
                         initGame();
                         clearInterval(waitingRepeater);
+                        
+                        // Setting the next game type for the upcoming players
+                        nextGameType();
 
                       }
                       

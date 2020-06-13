@@ -3,7 +3,7 @@ import { GlobalDatasService } from '../services/global-datas.service';
 import { Router } from '@angular/router';
 import { SocketService } from '../services/socket-service';
 import { Subscription } from 'rxjs';
-import { messages } from '../../../../languages';
+import { messages0 } from '../../../../languages';
 import {
   gameTime,
   water
@@ -423,7 +423,7 @@ export class MainComponent implements OnInit, OnDestroy {
   }
   
   /* This one is used when sending messages */
-  messageArray : object = messages;
+  messageArray : object = messages0;
   
   /*            END PROPERTIES              */
 

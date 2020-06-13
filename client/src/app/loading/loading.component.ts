@@ -3,7 +3,7 @@ import { GlobalDatasService } from '../services/global-datas.service';
 import { Router } from '@angular/router';
 import { SocketService } from '../services/socket-service';
 import { Subscription } from 'rxjs';
-import { messages } from '../../../../languages';
+import { messages0 } from '../../../../languages';
 
 @Component({
   selector: 'app-loading',
@@ -29,7 +29,7 @@ export class LoadingComponent implements OnInit, OnDestroy {
   timeBeforeStartSubscription : Subscription;
   
   // messages array
-  messageArray : object = messages;
+  messageArray : object = messages0;
 
   constructor(private globalDatasService : GlobalDatasService, private socketService : SocketService, private router : Router) { }
 

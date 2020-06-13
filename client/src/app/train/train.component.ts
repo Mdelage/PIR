@@ -3,7 +3,7 @@ import { HotkeysService, Hotkey } from 'angular2-hotkeys';
 import { Subscription } from 'rxjs/Subscription';
 import { GlobalDatasService } from '../services/global-datas.service';
 import { interval } from 'rxjs/observable/interval';
-import { messages } from '../../../../languages';
+import { messages0 } from '../../../../languages';
 import {
   gameTime,
   water
@@ -17,7 +17,7 @@ import {
 export class TrainComponent implements OnInit, OnDestroy {
 
   language : string ;
-  messageArray : object = messages;
+  messageArray : object = messages0;
 
   /* For selecting which controls to display
   0 : Robot Control
