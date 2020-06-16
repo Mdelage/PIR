@@ -3,7 +3,7 @@ import { GlobalDatasService } from '../services/global-datas.service';
 import { Router } from '@angular/router';
 import { SocketService } from '../services/socket-service';
 import { Subscription } from 'rxjs';
-import { messages0 } from '../../../../languages';
+import { messages0, messages1, messages2 } from '../../../../languages';
 import {
   gameTime,
   water
@@ -37,6 +37,10 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   /*            PROPERTIES              */
+  
+  // The type of game to load
+  gameType : number;
+  
   language : string;
   wrenchMode : boolean = false;
   alarmOverlayOpen : boolean = false;
@@ -423,7 +427,7 @@ export class MainComponent implements OnInit, OnDestroy {
   }
   
   /* This one is used when sending messages */
-  messageArray : object = messages0;
+  messageArray : object;
   
   /*            END PROPERTIES              */
 
@@ -434,7 +438,7 @@ export class MainComponent implements OnInit, OnDestroy {
     if(this.globalDatasService.popState){
       window.location.reload();
     }
- 
+    
     this.treesLocationsSubscription = this.socketService.onTreesLocations().subscribe((trees) => {
       this.trees = trees;
     });
@@ -516,6 +520,25 @@ export class MainComponent implements OnInit, OnDestroy {
       this.hotScreen = this.temperature/100;
       this.inRange = data.inRange;
       this.autonomous = data.autonomousMode;
+      
+      // Getting the game type
+      this.gameType = data.gameType;
+      
+      // Setting the corresponding messages array
+      switch (this.gameType) {
+        case 0:
+          this.messageArray = messages0;
+          break;
+        case 1:
+          this.messageArray = messages1;
+          break;
+        case 2:
+          this.messageArray = messages2;
+          break;
+        default:
+          this.messageArray = messages1;
+      }
+      
     });
   
     this.language = this.globalDatasService.language;

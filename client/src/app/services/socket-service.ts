@@ -98,7 +98,6 @@ export class SocketService {
         });
     }
 
-
     public onGameData(){
         return new Observable<any>( observer => {
             this.socket.on('gameData', (data) => {observer.next(data);});

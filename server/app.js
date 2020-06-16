@@ -1,7 +1,10 @@
 "use strict";
 
+// The settings file.
 const settings = require("../settings.js");
-const messages = require("../languages.js").messages;
+
+// The three different types of messages for each game type.
+const allMessages = require("../languages.js");
 
 var express = require("express");
 var app = express();
@@ -32,15 +35,20 @@ var globalToken = 0;
 var gameAvailable = true;
 var gameWillSoonStart = false;
 
-/* This variable will tell the server which type should it load
-0: normal
-1: modified dialogues
+/* This variable will tell the server which game type it should load
+0: pulling information
+1: pushing information
 2: no dialogue */
 var gameType = 0;
+/* Number of different game types */
+var nbGameType = 3;
 
-/* This function change the game type. The idea is to cycle
+/* This function changes the game type. The idea is to cycle
 through each type after every game */
-var nextGameType = () => { gameType = (gameType + 1) % 3; }
+var nextGameType = () => { gameType = (gameType + 1) % nbGameType; }
+
+// This variable will be assigned to one of the three types of messages as the games go on.
+var messages = allMessages["messages" + gameType];
 
 var nbPlayersLogged = 0;
 /*             END VARIABLES         */
@@ -587,10 +595,13 @@ function killAll(){
 	player2Ready = false;
 	gameAvailable = true;
 	gameWillSoonStart = false;
-	waitingTime = 15;
+	waitingTime = settings.waitingTime;
 	socketsArray.forEach((element) => {
 		element.socket.emit("remainingTimeResponse", {remainingTime : remainingTime});
 	});
+  
+    // Setting the next game type for the next players
+    nextGameType();
 
 }
 
@@ -1060,14 +1071,15 @@ function initGame(){
   mkdirp.sync(dirname, function(err){});
   wstream = fs.createWriteStream(dirname + '/datas.txt');
   wstream.write('#robot1 : ' + player1Role + ', robot2 : ' + player2Role + '\n');
-  wstream.write('# remaining_time, trees_state, global_score, ground_tank_water_level, leaks, personnal_score1, autonomous1, alarms1, robot1_x, robot1_y, robot1_theta, robot1_battery, robot1_temperature, robot1_waterlevel, robot1_shortkeys, robot1_clicks, personnal_score2, autonomous2, alarms2, robot2_x, robot2_y, robot2_theta, robot2_battery, robot2_temperature, robot2_waterlevel, robot2_shortkeys, robot2_clicks  \n');
+  wstream.write('# game_type, remaining_time, trees_state, global_score, ground_tank_water_level, leaks, personnal_score1, autonomous1, alarms1, robot1_x, robot1_y, robot1_theta, robot1_battery, robot1_temperature, robot1_waterlevel, robot1_shortkeys, robot1_clicks, personnal_score2, autonomous2, alarms2, robot2_x, robot2_y, robot2_theta, robot2_battery, robot2_temperature, robot2_waterlevel, robot2_shortkeys, robot2_clicks  \n');
   wstreamdialogues = fs.createWriteStream(dirname + '/dialogues.txt');
   isFinished = false;
   remainingTime = gameTime;
 
   player1DatasToSend.pos = player1Datas.pos;
   player1DatasToSend.other = player2Datas.pos;
-  player1DatasToSend.water = water;	
+  player1DatasToSend.water = water;
+  player1DatasToSend.gameType = gameType;
   player1Datas.battery = player1Datas.maxBatteryLevel;
   player1Datas.noBattery = false;
   player1Datas.autonomousMode = false;
@@ -1078,6 +1090,7 @@ function initGame(){
   player2DatasToSend.other = player1Datas.pos;
   player2DatasToSend.water = water;
   player2DatasToSend.remainingTime = remainingTime;
+  player2DatasToSend.gameType = gameType;
   player2Datas.battery = player2Datas.maxBatteryLevel;
   player2Datas.noBattery = false;
   player2Datas.autonomousMode = false;
@@ -1113,9 +1126,12 @@ function initGame(){
 
 function startGame(){
   
+  /* Sending relevant data to the two clients:
+  the tree locations, the zone locations, the player roles, the game type */
   socketNb1.emit("trees", {trees : treesLocations});
   socketNb1.emit("zones", {zones : zonesLocations});
   socketNb1.emit("role", { role : player1Datas.role});
+  
   socketNb2.emit("trees", {trees : treesLocations});
   socketNb2.emit("zones", {zones : zonesLocations});
   socketNb2.emit("role", { role : player2Datas.role});
@@ -1127,7 +1143,7 @@ function startGame(){
       player2Datas.stringWriteClicks += "'";
       player1Datas.stringWriteUsedKeys += "'";
       player2Datas.stringWriteUsedKeys += "'";
-      wstream.write(remainingTime + '; ' + firesString() + '; ' + teamScore + '; ' + water.waterLevelContainer+ '; ' + leakPlacesString() + '; ' + player1Datas.personnalScore + '; ' + Number(player1Datas.autonomousMode) + '; ' + player1Datas.stringWriteAlarms + '; ' + player1Datas.pos[0] + '; ' + player1Datas.pos[1] + '; ' + player1Datas.pos[2] + '; ' + player1Datas.battery + '; ' + player1Datas.temperature + '; ' + player1Datas.waterLevel + '; ' + player1Datas.stringWriteUsedKeys + '; ' + player1Datas.stringWriteClicks + '; ' + player2Datas.personnalScore + '; ' + Number(player2Datas.autonomousMode) + '; ' + player2Datas.stringWriteAlarms + '; ' + player2Datas.pos[0] + '; ' + player2Datas.pos[1] + '; ' + player2Datas.pos[2] + '; ' + player2Datas.battery + '; ' + player2Datas.temperature + '; ' + player2Datas.waterLevel + '; ' + player2Datas.stringWriteUsedKeys + '; ' + player2Datas.stringWriteClicks + '\n');
+      wstream.write(gameType + ';' + remainingTime + '; ' + firesString() + '; ' + teamScore + '; ' + water.waterLevelContainer+ '; ' + leakPlacesString() + '; ' + player1Datas.personnalScore + '; ' + Number(player1Datas.autonomousMode) + '; ' + player1Datas.stringWriteAlarms + '; ' + player1Datas.pos[0] + '; ' + player1Datas.pos[1] + '; ' + player1Datas.pos[2] + '; ' + player1Datas.battery + '; ' + player1Datas.temperature + '; ' + player1Datas.waterLevel + '; ' + player1Datas.stringWriteUsedKeys + '; ' + player1Datas.stringWriteClicks + '; ' + player2Datas.personnalScore + '; ' + Number(player2Datas.autonomousMode) + '; ' + player2Datas.stringWriteAlarms + '; ' + player2Datas.pos[0] + '; ' + player2Datas.pos[1] + '; ' + player2Datas.pos[2] + '; ' + player2Datas.battery + '; ' + player2Datas.temperature + '; ' + player2Datas.waterLevel + '; ' + player2Datas.stringWriteUsedKeys + '; ' + player2Datas.stringWriteClicks + '\n');
       player1Datas.stringWriteAlarms = "'";
       player2Datas.stringWriteAlarms = "'";
       player1Datas.stringWriteClicks = "'";
@@ -1388,15 +1404,14 @@ function startGame(){
           player2DatasToSend.personnalScore = player2Datas.personnalScore;
           player2DatasToSend.temperature = player2Datas.temperature;
           player2DatasToSend.autonomousMode = player2Datas.autonomousMode;
-
+          
           socketNb1.emit("gameData", player1DatasToSend);
           socketNb2.emit("gameData", player2DatasToSend);
+        
       }else{
           clearInterval(sendData);
       }
   }, 50);
-
-
 
 }
 
@@ -1482,14 +1497,13 @@ io.on('connection', (socket) => {
 
                         socketNb1.emit("launchingGame", {});
                         socketNb2.emit("launchingGame", {});
+                        
                         nbPlayersLogged = 0;
                         
                         // Starting the game
                         initGame();
                         clearInterval(waitingRepeater);
                         
-                        // Setting the next game type for the upcoming players
-                        nextGameType();
 
                       }
                       
@@ -1556,7 +1570,13 @@ io.on('connection', (socket) => {
 	socket.on("readyToPlay", (data) =>{
 		nbPlayersLogged +=1;
 		if(nbPlayersLogged === 2){
-			startGame();
+          
+          console.log("Players connected! Current game type: " + gameType);
+          // Changing the type of messages according to the game type
+          messages = allMessages["messages" + gameType];
+          
+		  startGame();
+          
 		}
 	});
 

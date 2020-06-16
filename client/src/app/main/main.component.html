@@ -350,7 +350,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="comms">
+		<div class="comms" *ngIf="gameType != 2">
 			<button class="commButton1" (click)="sendKey('1')" *ngIf="language=='english'">
 				{{ messageArray.english1() }}
 				<div class="char"> w </div>
