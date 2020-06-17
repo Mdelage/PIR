@@ -57,7 +57,7 @@ exports.messages0 = messages0;
 /* The messages here pull information instead of pushing it. */
 const messages1 = {
 
-  english1 : () => { return "Can you feel the water tank?" },
+  english1 : () => { return "Can you fill the water tank?" },
   english2 : () => { return "I'm going to refuel my water." },
   english3 : () => { return "Do you need water?" },
   english4 : () => { return "Do you need energy?" },
