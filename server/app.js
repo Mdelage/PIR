@@ -1127,7 +1127,7 @@ function initGame(){
 function startGame(){
   
   /* Sending relevant data to the two clients:
-  the tree locations, the zone locations, the player roles, the game type */
+  the tree locations, the zone locations, the player roles */
   socketNb1.emit("trees", {trees : treesLocations});
   socketNb1.emit("zones", {zones : zonesLocations});
   socketNb1.emit("role", { role : player1Datas.role});
