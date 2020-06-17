@@ -21,14 +21,259 @@ export class MainComponent implements OnInit, OnDestroy {
   // What to send to the server when pushing a key
   @HostListener('document:keydown', ['$event']) onKeydown(event : KeyboardEvent) {
     
-    this.keyArray["keyDown" + event.keyCode]();
+    // Old way
+    // this.keyArray["keyDown" + event.keyCode]();
+    
+    switch (event.keyCode) {
+        
+      case 38:
+        if (!this.upPressed) {
+        this.upPressed = true;
+        this.downPressed = false;
+        this.socketService.sendKey('upDown');
+        }
+        break;
+        
+      case 40:
+        if (!this.downPressed) {
+        this.downPressed = true;
+        this.upPressed = false;
+        this.socketService.sendKey('downDown');
+        }
+        break;
+      
+      case 37:
+        if (!this.leftPressed) {
+        this.leftPressed = true;
+        this.rightPressed = false;
+        this.socketService.sendKey('leftDown');
+        }
+        break;
+        
+      case 39:
+        if (!this.rightPressed) {
+        this.rightPressed = true;
+        this.leftPressed = false;
+        this.socketService.sendKey('rightDown');
+        }
+        break;
+        
+      case 65:
+        if (!this.aPressed) {
+        this.aPressed = true;
+        this.socketService.sendKey('a');
+        }
+        break;
+        
+      case 83:
+        if (!this.sPressed) {
+        this.sPressed = true;
+        this.socketService.sendKey('s');
+        }
+        break;
+        
+      case 68:
+        if (!this.dPressed) {
+        this.dPressed = true;
+        this.socketService.sendKey('d');
+        }
+        break;
+        
+      case 69:
+        if (!this.ePressed) {
+        this.ePressed = true;
+        this.socketService.sendKey('e');
+        }
+        break;
+        
+      case 32:
+        if (!this.spacePressed) {
+        this.spacePressed = true;
+        this.socketService.sendKey('space');
+        }
+        break;
+        
+      case 87:
+        if (!this.onePressed) {
+        this.onePressed = true;
+        this.socketService.sendKey('1');
+        }
+        break;
+        
+      case 88:
+        if (!this.twoPressed) {
+        this.twoPressed = true;
+        this.socketService.sendKey('2');
+        }
+        break;
+        
+      case 67:
+        if (!this.threePressed) {
+        this.threePressed = true;
+        this.socketService.sendKey('3');
+        }
+        break;
+        
+      case 86:
+        if (!this.fourPressed) {
+        this.fourPressed = true;
+        this.socketService.sendKey('4');
+        }
+        break;
+        
+      case 66:
+        if (!this.fivePressed) {
+        this.fivePressed = true;
+        this.socketService.sendKey('5');
+        }
+        break;
+        
+      case 78:
+        if (!this.sixPressed) {
+        this.sixPressed = true;
+        this.socketService.sendKey('6');
+        }
+        break;
+        
+      case 82:
+        if (!this.rPressed) {
+        this.rPressed = true;
+        this.socketService.sendKey('rDown');
+        }
+        break;
+      
+      case 84:
+        if (!this.tPressed) {
+        this.tPressed = true;
+        this.socketService.sendKey('tDown');
+        }
+        break;
+        
+      case 70:
+        if (!this.fPressed) {
+        this.fPressed = true;
+        this.socketService.sendKey('fDown');
+        }
+        break;
+        
+      case 71:
+        if (!this.gPressed) {
+        this.gPressed = true;
+        this.socketService.sendKey('gDown');
+        }
+      
+    }
     
   }
 
   // What to send to the server when releasing a key
   @HostListener('document:keyup', ['$event']) onKeyup(event : KeyboardEvent) {
     
-    this.keyArray["keyUp" + event.keyCode]();
+    // Old way
+    // this.keyArray["keyUp" + event.keyCode]();
+    
+    switch (event.keyCode) {
+        
+      case 38:
+        if (this.upPressed) {
+        this.upPressed = false;
+        this.socketService.sendKey('upUp');
+        }
+        break;
+        
+      case 40:
+        if (this.downPressed) {
+        this.downPressed = false;
+        this.socketService.sendKey('downUp');
+        }
+        break;
+      
+      case 37:
+        if (this.leftPressed) {
+        this.leftPressed = false;
+        this.socketService.sendKey('leftUp');
+        }
+        break;
+        
+      case 39:
+        if (this.rightPressed) {
+        this.rightPressed = false;
+        this.socketService.sendKey('rightUp');
+        }
+        break;
+        
+      case 65:
+        this.aPressed = false;
+        break;
+        
+      case 83:
+        this.sPressed = false;
+        break;
+        
+      case 68:
+        this.dPressed = false;
+        break;
+        
+      case 69:
+        this.ePressed = false;
+        break;
+        
+      case 32:
+        this.spacePressed = false;
+        break;
+        
+      case 87:
+        this.onePressed = false;
+        break;
+        
+      case 88:
+        this.twoPressed = false;
+        break;
+        
+      case 67:
+        this.threePressed = false;
+        break;
+        
+      case 86:
+        this.fourPressed = false;
+        break;
+        
+      case 66:
+        this.fivePressed = false;
+        break;
+        
+      case 78:
+        this.sixPressed = false;
+        break;
+        
+      case 82:
+        if (this.rPressed) {
+        this.rPressed = false;
+        this.socketService.sendKey('rUp');
+        }
+        break;
+      
+      case 84:
+        if (this.tPressed) {
+        this.tPressed = false;
+        this.socketService.sendKey('tUp');
+        }
+        break;
+        
+      case 70:
+        if (this.fPressed) {
+        this.fPressed = false;
+        this.socketService.sendKey('fUp');
+        }
+        break;
+        
+      case 71:
+        if (this.gPressed) {
+        this.gPressed = false;
+        this.socketService.sendKey('gUp');
+        }
+      
+    }
     
   }
 
@@ -145,8 +390,8 @@ export class MainComponent implements OnInit, OnDestroy {
   alarmsSubscription : Subscription;
   gameOverSubscription : Subscription;
   
-  /* This associative array is used to send inputs
-  when you're pressing and releasing keys */
+  /* This associative array was used to send inputs
+  when you're pressing and releasing keys. This is less effective than using switches
   keyArray : object = {
     
     // up pushed
@@ -424,7 +669,7 @@ export class MainComponent implements OnInit, OnDestroy {
         this.socketService.sendKey('gUp');
       }
     }
-  }
+  } */
   
   /* This one is used when sending messages */
   messageArray : object;

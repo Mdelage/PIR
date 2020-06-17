@@ -678,7 +678,7 @@ function leakPlacesString(){
 }
 
 
-function autonomousFunction(player, otherPlayer, inputArray){
+function autonomousFunction(player, otherPlayer){
 	var cap;
 	var p = Math.random();
 	//test d'activation du mode autonome
@@ -904,7 +904,7 @@ function scalarProduct(point1, point2){
 	return point1.x*point2.x + point1.y*point2.y;
 }
 
-/* Functions used inside inputArray */
+/* Functions used inside for registering inputs */
 
 //Function for when the player presses the up or down arrows
 var forwardBackward = (playerData, dir) => {
@@ -922,7 +922,8 @@ var messageToSent = (playerData, nbrMessage, token, message) => {
   wstreamdialogues.write(remainingTime + ' : ' + playerData.role + ' : ' + message + '\n');
 };
 
-/* This is the list of all the inputs the server can register. */
+/* This is the list of all the inputs the server can register.
+We use switch statements instead
 const inputArray = {
   
   //When the player presses the up arrow
@@ -1014,7 +1015,7 @@ const inputArray = {
   //When the player releases g
   keygUp : (playerData, token, socket) => playerData.receivingBattery = false
 
-}
+} */
 
 function initGame(){
   var p;
@@ -1378,8 +1379,8 @@ function startGame(){
       }
   }, 1000);
 
-  player1Datas.autonomousInterval = setInterval(() => {autonomousFunction(player1Datas, player2Datas, inputArray);}, tryAutonomousTime);
-  player2Datas.autonomousInterval = setInterval(() => {autonomousFunction(player2Datas, player2Datas, inputArray);}, tryAutonomousTime);
+  player1Datas.autonomousInterval = setInterval(() => {autonomousFunction(player1Datas, player2Datas);}, tryAutonomousTime);
+  player2Datas.autonomousInterval = setInterval(() => {autonomousFunction(player2Datas, player2Datas);}, tryAutonomousTime);
 
   sendData = setInterval(() => {
       if(!isFinished){
@@ -1655,13 +1656,123 @@ io.on('connection', (socket) => {
 		var comma = (playerData.stringWriteUsedKeys == "'") ? '' : ',';
 		playerData.stringWriteUsedKeys += comma + data.key;
         
-        /* We use an associative array instead of if else statements for 
-        registering the inputs.
-        With this method, we only do one comparison for each input, instead of multiple.*/
         
-        /* That if is to prevent an undefined key to call a function
-        which would raise an exception. */
-        if (inputArray["key" + key]) { inputArray["key" + key](playerData, token, socket); }
+        
+        // Old way
+        // if (inputArray["key" + key]) { inputArray["key" + key](playerData, token, socket); }
+      
+        switch (key) {
+            
+          case "upDown" :
+            forwardBackward(playerData, 1);
+            break;
+            
+          case "upUp" :
+            forwardBackward(playerData, 0);
+            break;
+            
+          case "downDown" :
+            forwardBackward(playerData, -1);
+            break;
+            
+          case "downUp" :
+            forwardBackward(playerData, 0);
+            break;
+            
+          case "rightDown" :
+            rightLeft(playerData, 1);
+            break;
+            
+          case "rightUp" :
+            rightLeft(playerData, 0);
+            break;
+            
+          case "leftDown" :
+            rightLeft(playerData, -1);
+            break;
+            
+          case "leftUp" :
+            rightLeft(playerData, 0);
+            break;
+            
+          case "a" :
+            wrenchOnOff();
+            break;
+            
+          case "e" :
+            waterPushButton();
+            break;
+            
+          case "s" :
+            faucetSpeedDown();
+            break;
+            
+          case "d" :
+            faucetSpeedUp();
+            break;
+            
+          case "space" :
+            if (!playerData.autonomousMode) {
+              throwWater(playerData, socket);
+            };
+            break;
+            
+          case "1" :
+            messageToSent(playerData, 1, token, messages.english1());
+            break;
+            
+          case "2" :
+            messageToSent(playerData, 2, token, messages.english2());
+            break;
+            
+          case "3" :
+            messageToSent(playerData, 3, token, messages.english3());
+            break;
+            
+          case "4" :
+            messageToSent(playerData, 4, token, messages.english4());
+            break;
+            
+          case "5" :
+            messageToSent(playerData, 5, token, messages.english5());
+            break;
+            
+          case "6" :
+            messageToSent(playerData, 6, token, messages.english6());
+            break;
+            
+          case "rDown" :
+            trySendWater(token);
+            break;
+            
+          case "rUp" :
+            playerData.givingWater = false;
+            break;
+            
+          case "tDown" :
+            tryReceiveWater(token);
+            break;
+            
+          case "tUp" :
+            playerData.receivingWater = false;
+            break;
+            
+          case "fDown" :
+            trySendBattery(token);
+            break;
+            
+          case "fUp" :
+            playerData.givingBattery = false;
+            break;
+            
+          case "gDown" :
+            tryReceiveBattery(token);
+            break;
+            
+          case "gUp" :
+            playerData.receivingBattery = false;
+            
+        }
       
 	});
   
