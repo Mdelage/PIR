@@ -70,7 +70,7 @@ var player2;
 var playerPos;
 
 // Represents the water reservoir and faucet
-var water = settings.water;
+var water = {};
 
 var treesLocations;
 var zonesLocations;
@@ -130,6 +130,10 @@ var pAlarm;
 
 
 function initWater(water) {
+  
+  // From the settings file
+  water = JSON.parse(JSON.stringify(settings.water));
+  
 
   water.leakPlaces  = [];
   water.noLeakAt  = [];
@@ -162,18 +166,6 @@ function initWater(water) {
   }
   
   return water;
-}
-
-var initSpeeder = (player) => { 
-  for (const property in settings.speeder) {
-    player[property] = settings.speeder[property];
-  }
-}
-
-var initTanker = (player) => {
-  for (const property in settings.tanker) {
-    player[property] = settings.tanker[property];
-  }
 }
 
 function processPosition(player) {
@@ -558,6 +550,8 @@ var tryReceiveBattery = (token) => {
 
 function killAll(){
 	isFinished = true;
+    // Setting the next game type for the next players
+    nextGameType();
 	clearInterval(temperatureInterval);
 	clearInterval(socketStates);
 	clearInterval(waterRepeater);
@@ -599,10 +593,6 @@ function killAll(){
 	socketsArray.forEach((element) => {
 		element.socket.emit("remainingTimeResponse", {remainingTime : remainingTime});
 	});
-  
-    // Setting the next game type for the next players
-    nextGameType();
-
 }
 
 function saveScore(){
@@ -1041,30 +1031,41 @@ function initGame(){
   }, 1000);
   teamScore = 0;
   newBestScore = false;
-  player1Datas = {};
-  player2Datas = {};
   player1DatasToSend = {};
   player2DatasToSend = {};
-  player1Datas.socket = socketNb1;
-  player2Datas.socket = socketNb2;
 
   p = Math.random();
+  
+  /* The following code does not work, it won't deep copy the object settings.speeder.
+  As a result, the pos field (which is an array) will be shared
+  between settings.speeder and player, resulting in bugs.
+  
+  for (const property in settings.speeder) {
+    player[property] = settings.speeder[property];
+  }
+  
+  The following method deep copy settings.speeder
+  
+  player = JSON.parse(JSON.stringify(settings.speeder)); */
 
   if(p > 0.5){
       player1Role = 'tanker';
       socketNb1.emit('role', 'tanker');
-      initTanker(player1Datas);
+      player1Datas = JSON.parse(JSON.stringify(settings.tanker));
       player2Role = 'speeder';
       socketNb2.emit('role', 'speeder');
-      initSpeeder(player2Datas);
+      player2Datas = JSON.parse(JSON.stringify(settings.speeder));
   }else{
       player1Role = 'speeder';
       socketNb1.emit('role', 'speeder');
-      initSpeeder(player1Datas);
+      player1Datas = JSON.parse(JSON.stringify(settings.speeder));
       player2Role ='tanker';
       socketNb2.emit('role', 'tanker');
-      initTanker(player2Datas);
+      player2Datas = JSON.parse(JSON.stringify(settings.tanker));
   }
+  
+  player1Datas.socket = socketNb1;
+  player2Datas.socket = socketNb2;
 
   date = new Date();
   dirname = 'records/record_' + date.getFullYear() + '_' + ('0' + (date.getMonth()+1)).slice(-2) + '_' + ('0' + date.getDate()).slice(-2) + '__' + ('0' + date.getHours()).slice(-2) + '_' + ('0' + date.getMinutes()).slice(-2);
@@ -1500,9 +1501,11 @@ io.on('connection', (socket) => {
                         
                         nbPlayersLogged = 0;
                         
+                        clearInterval(waitingRepeater);
+                        
                         // Starting the game
                         initGame();
-                        clearInterval(waitingRepeater);
+
                         
 
                       }
