@@ -78,6 +78,17 @@
               <span> Votre robot pourrait manquer d'eau. Pour en récupérer, placez-le sur la station du réservoir d'eau (<span style="color: blue;">carré bleu</span>). Le réservoir n'est pas infini. Vous ou votre coéquipier devront le remplir et réparer les fuites. </span>
           </div>
       </div>
+      <div class="rowhowto">
+		<div class="leftpartrow">
+			<i class="fa fa-thermometer-three-quarters" aria-hidden="true"></i>
+		</div>
+		<div class="rightpartrow" *ngIf="language=='english'">
+		<span> Pay attention to your robot temperature when it is too close to flames!  </span>
+		</div>
+		<div class="rightpartrow" *ngIf="language=='french'">
+		<span> Faites attention à la température de votre robot lorsqu'il est trop proche des flammes !</span>
+		</div>
+	  </div>
   </div>
     <div class="display" *ngIf="display==1">
 	<div class="rowhowto">
@@ -85,10 +96,10 @@
 			<i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
 		</div>
 		<div class="rightpartrow" *ngIf="language=='english'">
-			<span> With the help of your robot and your teammate's, your mission is to extinguish as many fires as possible within the time limit. </span>
+			<span> With the help of your robot and your teammate's, your mission is to extinguish as many fires as possible within the time limit of 5 minutes. </span>
 		</div>
 		<div class="rightpartrow" *ngIf="language=='french'">
-			<span> Avec l'aide de ce robot et celui de votre coéquipier, votre mission est d'éteindre le plus de feux possible pendant la limite de temps. </span>
+			<span> Avec l'aide de ce robot et celui de votre coéquipier, votre mission est d'éteindre le plus de feux possible pendant la limite de temps de 5 minutes. </span>
 		</div>
 	</div>
     <div class="rowhowto">
@@ -127,19 +138,19 @@
 
 	<div class="rowhowto">
 		<div class="leftpartrow">
-			<i class="fa fa-thermometer-three-quarters" aria-hidden="true"></i>
+			<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
 		</div>
 		<div class="rightpartrow" *ngIf="language=='english'">
-		<span> Pay attention to your robot temperature when it is too close to flames!  </span>
+		<span> Various alarms will appear during the game. You'll have to turn them off! </span>
 		</div>
 		<div class="rightpartrow" *ngIf="language=='french'">
-		<span> Faites attention à la température de votre robot lorsqu'il est trop proche des flammes !</span>
+		<span> Différentes alarmes apparaîtront durant la partie. Vous devrez vous en occupez !</span>
 		</div>
 	</div>
   
     <div class="rowhowto">
 		<div class="leftpartrow">
-			<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+			<i class="fa fa-info" aria-hidden="true"></i>
 		</div>
 		<div class="rightpartrow" *ngIf="language=='english'">
 		<span> The game ends after the time limit, if both robots run out of energy, or if your temperature is too high. </span>
